@@ -1,0 +1,14 @@
+{
+    "topupName": {
+        "OFFPAY": "线下收单提现",
+        "OFFPAY_OFFLINE": "线下收单提现",
+        "REBATE": "返利提现"
+    },
+    "statusName": {
+        "CANCELED": "已取消",
+        "WAITING_FOR_CONFIRM": "待确认",
+        "CREATED": "已发起",
+        "DEALING": "处理中",
+        "TRANSFERRED": "已到账"
+    }
+}

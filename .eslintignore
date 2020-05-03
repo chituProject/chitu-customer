@@ -1,0 +1,8 @@
+build/*.js
+config/*.js
+src/main.js
+src/App.vue
+src/utils/*.*
+src/store/index.js
+src/pages/apply/index.vue
+static/sdk/cos-sdk.js

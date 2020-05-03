@@ -1,0 +1,7 @@
+{
+    "baseURL": "https://dev.offpay.cn/reseller/",
+    "ossURL": "https://dev.offpay.cn/insider/oss-auth/",
+    "Bucket": "offpay-dev-1256235662",
+    "Region": "ap-guangzhou",
+    "mapKey": "IUXBZ-ABF3X-NHT42-7PJQJ-65PUJ-F5FZW"
+}
