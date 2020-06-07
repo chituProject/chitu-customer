@@ -1,0 +1,8 @@
+{
+    "ADMIN_CONFIRMING": "等待客服处理",
+    "SUPPLIER_CONFIRMING": "等待客服处理",
+    "CUSTOMER_UNSHIPPED": "请填写回寄单号",
+    "CANCELED": "服务结束",
+    "CUSTOMER_SHIPPING": "等待回寄商品运送中",
+    "FINISHED": "服务结束"
+}

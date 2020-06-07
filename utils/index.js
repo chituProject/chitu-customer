@@ -1,27 +1,127 @@
-
-import {showToast} from '@/utils/adapter';
-
-export function formatTime(tt, mode = 0) {
+export function timeDeltaSec(tt, mode = 0) {
   if (!tt) {
-    return "";
+    return 0;
+  }
+  const a = tt.split("-");
+  const y = a[0];
+  const m = a[1];
+  const Str1 = a[2];
+  let d = Str1.substr(0, 2);
+  let h = Str1.substr(3, 2);
+  let minutes = Str1.substr(6, 2);
+  const seconds = Str1.substr(9, 2);
+
+  // 对于mode = 1，是从3天开始算
+  if (mode === 1) {
+    d = parseInt(d, 10);
+    d += 3;
+  }
+
+  // ios系统必须用/做分隔符
+  const time1 = new Date(`${y}/${m}/${d} ${h}:${minutes}:${seconds}`);
+  const time2 = new Date();
+  if (mode === 0) {
+    return parseInt((time2.getTime() - time1.getTime()) / 1000, 10) > 1800
+      ? 1800
+      : parseInt((time2.getTime() - time1.getTime()) / 1000, 10);
+  }
+  let deltaSecs = (time1.getTime() - time2.getTime()) / 1000;
+  const total = deltaSecs;
+  d = Math.floor(deltaSecs / 86400);
+  deltaSecs %= 86400;
+  h = Math.floor(deltaSecs / 3600);
+  deltaSecs %= 3600;
+  minutes = Math.floor(deltaSecs / 60);
+  return { d, h, minutes, total };
+}
+
+export function timeDeltaDay(tt) {
+  if (!tt) {
+    return 0;
   }
   const a = tt.split("-");
   const y = a[0];
   const m = a[1];
   const Str1 = a[2];
   const d = Str1.substr(0, 2);
-  const h = Str1.substr(3, 2);
-  const minutes = Str1.substr(6, 2);
-  const seconds = Str1.substr(9, 2);
-  if (mode === 0) {
-    return `${m}月${d}日 ${h}:${minutes}:${seconds}`;
-    // return `${y}/${m}/${d} ${h}:${minutes}:${seconds}`;
-  }
-  return `${y}年${m}月${d}日`;
+
+  const time1 = new Date(`${y}/${m}/${d} 00:00:00`);
+  const time2 = new Date();
+  return parseInt((time1.getTime() - time2.getTime()) / 86400000);
 }
 
-export function formatPrice(n) {
-  return (n / 100).toFixed(2);
+export function formatDay(tt) {
+  return tt.substr(0, 10);
+}
+
+export function calEndTime(start_time, delta, mode = 0) {
+  // console.log(start_time.replace(/-/g, '/').replace(/T/, ' ').substr(0,16));
+  const end_at = new Date(
+    start_time
+      .replace(/-/g, "/")
+      .replace(/T/, " ")
+      .substr(0, 16)
+  );
+  // console.log(end_at);
+  end_at.setMinutes(end_at.getMinutes() + delta);
+  // let end_at = new Date(new Date(start_time).getTime() + delta * 60 * 60 * 1000);
+  const y = end_at.getFullYear();
+  const m = end_at.getMonth() + 1;
+  const d = end_at.getDate();
+  const h = end_at.getHours();
+  let minutes = end_at.getMinutes();
+  if (minutes < 10) {
+    minutes = `0${minutes}`;
+  }
+  if (mode === 0) {
+    return `${m}月${d}日${h}:${minutes}`;
+  }
+  return `${y}年${m}月${d}日${h}点`;
+}
+
+export function formatGoods(list) {
+  if (!list) {
+    return [];
+  }
+  const list1 = [];
+  const list2 = [];
+  for (let i = 0; i < list.length; i += 1) {
+    if (Object.prototype.hasOwnProperty.call(list, i)) {
+      if (list[i].goods) {
+        if (i % 2 === 0) {
+          list1.push(list[i].goods);
+        } else {
+          list2.push(list[i].goods);
+        }
+      } else if (i % 2 === 0) {
+        list1.push(list[i]);
+      } else {
+        list2.push(list[i]);
+      }
+    }
+  }
+  return [list1, list2];
+}
+
+export function formatGoods3(list) {
+  if (!list) {
+    return [];
+  }
+  const list1 = [];
+  const list2 = [];
+  const list3 = [];
+  for (let i = 0; i < list.length; i += 1) {
+    if (Object.prototype.hasOwnProperty.call(list, i)) {
+      if (i % 3 === 0) {
+        list1.push(list[i]);
+      } else if (i % 3 === 1) {
+        list2.push(list[i]);
+      } else {
+        list3.push(list[i]);
+      }
+    }
+  }
+  return [list1, list2, list3];
 }
 
 export function deformatPrice(str) {
@@ -29,138 +129,129 @@ export function deformatPrice(str) {
   return parseFloat(yuan) * 100;
 }
 
-export function isNumber(val) {
-  const regPos = /^\d+(\.\d+)?$/; // 非负浮点数
-  const regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
-  if (regPos.test(val) || regNeg.test(val)) {
-    return true;
-  }
-  return false;
-}
-
-export function isChinese(name) {
-  const myreg = /^[\u4e00-\u9fa5]{2,10}$/;
-  if (!myreg.test(name)) {
-    showToast({ title: '请输入正确的中文姓名', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isIdcard(idcard) {
-  const myreg = /^([1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2})$/;
-  if (!myreg.test(idcard)) {
-    showToast({ title: '请输入正确身份证号', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isBankCard(bankcard) {
-  const myreg = /^[0-9]{16,19}$/;
-  if (!myreg.test(bankcard)) {
-    showToast({ title: '请输入正确银行卡号', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isPhone(phone) {
-  const myreg = /^[1][0-9]{10}$/;
-  if (!myreg.test(phone)) {
-    showToast({ title: '请输入正确中国大陆手机号', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isLicense(license) {
-  const myreg = /^[0-9|A-Z|a-z]{15,18}$/;
-  if (!myreg.test(license)) {
-    showToast({ title: '请输入正确营业执照号', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isSmscode(code) {
-  const myreg = /^[0-9]{4}$/;
-  if (!myreg.test(`${code}`)) {
-    showToast({ title: '请输入正确验证码', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isUrl(url, hint) {
-  console.log('url', url);
-  // const myreg = /(http|ftp|https):?/;
-  if (!url) {
-    showToast({ title: hint, icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isEmpty(key, value) {
-  if (!value) {
-    showToast({ title: `请输入${key}!`, icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
-export function isEmail(email) {
-  const regexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!regexp.test(email)) {
-    showToast({ title: '请输入正确的邮件地址', icon: 'none' });
-    return false;
-  }
-  return true;
-}
-
 // export function utf8(str) {
 //   console.log('utf8', str);
 //   return str.replace(/\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g, "\u9602");
 // }
 
-export function trim_nulls(data) {
-  var y;
-  for (var x in data) {
-    y = data[x];
-    if (y instanceof Object) y = trim_nulls(y);
-    if (y === "null" || y === null || y === "" || typeof y === "undefined" || (y instanceof Object && Object.keys(y).length == 0)) {
-      delete data[x];
+export function isChinese(name) {
+  const myreg = /^[\u4e00-\u9fa5]{1,10}$/;
+  if (!myreg.test(name)) {
+    // showToast({ title: '请输入正确的中文姓名', icon: 'none' });
+    return false;
+  }
+  return true;
+}
+
+export function isEmpty(value) {
+  if (
+    value === null ||
+    value === "" ||
+    value === "undefined" ||
+    value === undefined ||
+    value === "null"
+  ) {
+    return true;
+  }
+  if (typeof value === "undefined") {
+    return true;
+  }
+  if (typeof value === "string") {
+    value = value.replace(/\s/g, "");
+    if (value == "") {
+      return true;
     }
   }
-  return data;
+  return false;
 }
 
 export function debounce(func, delay) {
-  let timer
+  let timer;
 
-  return function (...args) {
+  return function(...args) {
     if (timer) {
-      clearTimeout(timer)
+      clearTimeout(timer);
     }
     timer = setTimeout(() => {
-      func.apply(this, args)
-    }, delay)
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+export function deepCopy(item) {
+  return JSON.parse(JSON.stringify(item));
+}
+
+export function countBaseSale(uuid, min_num = 50, max_num = 2000) {
+  if (!uuid) {
+    return 0;
   }
+  let seed = 0;
+  const zero = "0".charCodeAt(0);
+  const a = "a".charCodeAt(0);
+  for (let i = 1; i <= 4; i++) {
+    seed =
+      seed * 36 +
+      (uuid.charCodeAt(uuid.length - i) >= a
+        ? uuid.charCodeAt(uuid.length - i) - a + 10
+        : uuid.charCodeAt(uuid.length - i) - zero);
+  }
+  seed %= 167961;
+  seed /= 167961.0;
+  seed = parseInt(min_num + (max_num - min_num) * seed);
+  console.log("seed", seed);
+  return seed;
+}
+
+function toRad(d) {
+  return (d * Math.PI) / 180.0;
+}
+export function getDisance(lat1, lng1, lat2, lng2) {
+  var dis = 0;
+  const radLat1 = toRad(lat1);
+  const radLat2 = toRad(lat2);
+  const deltaLat = radLat1 - radLat2;
+  const deltaLng = toRad(lng1) - toRad(lng2);
+  var dis =
+    2 *
+    Math.asin(
+      Math.sqrt(
+        Math.pow(Math.sin(deltaLat / 2), 2) +
+          Math.cos(radLat1) *
+            Math.cos(radLat2) *
+            Math.pow(Math.sin(deltaLng / 2), 2)
+      )
+    );
+  return Math.round(dis * 6378137.0).toFixed(2);
+}
+
+export function getMi(disance) {
+  const dis = (4000 / 60).toFixed(2);
+  const min = (disance / dis).toFixed(2);
+  if (min > 60) {
+    return `约${(min / 60).toFixed(0)}小时${min % 60}分钟`;
+  }
+  if (Math.floor(min) <= 0) {
+    return `小于1分钟`;
+  }
+  return `约${Math.floor(min)}分钟`;
 }
 
 export default {
-  formatTime,
-  formatPrice,
+  formatDay,
+  formatGoods,
+  formatGoods3,
+  timeDeltaDay,
+  timeDeltaSec,
+  calEndTime,
   deformatPrice,
-  isNumber,
-  isChinese,
-  isIdcard,
-  isBankCard,
-  isPhone,
-  isLicense,
-  isUrl,
   // utf8,
-  trim_nulls,
+  isChinese,
+  isEmpty,
   debounce,
+  deepCopy,
+  countBaseSale,
+  // shorten
+  getDisance,
+  getMi
 };

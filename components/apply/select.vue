@@ -1,10 +1,15 @@
 <template>
-  <picker mode="selector" :range="list" :range-key="labelKey" :value="pickerValue"
-          @change="changeSelect($event)"
+  <picker
+    mode="selector"
+    :range="list"
+    style="padding: 16upx 14upx;background: #fff;border-radius: 30upx"
+    @change="changeSelect($event)"
   >
-    <div class="flex" style="height:48px;padding-right:10px;">
-      <p>{{ pickerLabel || placeholder }}</p>
-      <div class="arrow-right"></div>
+    <div class="flex" style="height: 30upx;">
+      <p style="line-height: 30upx;color: #9a1f27">
+        {{ pickerLabel || placeholder }}
+      </p>
+      <div class="arrow-down" style="margin-left: 15upx"></div>
     </div>
   </picker>
 </template>
@@ -14,7 +19,7 @@ export default {
   props: {
     value: {
       type: String,
-      required: false,
+      required: false
     },
     list: {
       type: Array,
@@ -24,36 +29,36 @@ export default {
     },
     placeholder: {
       type: String,
-      required: false,
-    },
-    valueKey: {
-      type: String,
-      required: true,
-    },
-    labelKey: {
-      type: String,
-      required: true,
-    },
+      required: false
+    }
+  },
+  data() {
+    return {
+      index: 0
+    };
   },
   computed: {
     pickerLabel() {
-      return (this.list.find(item => item[this.valueKey] === this.value) || {})[this.labelKey];
-    },
-    pickerValue() {
-      return this.list.findIndex(item => item[this.valueKey] === this.value);
-    },
+      return this.list[this.index];
+    }
+    // pickerValue() {
+    //   return this.list.findIndex(item => item[this.valueKey] === this.value);
+    // }
   },
   methods: {
     changeSelect(e) {
-      const selectedValue = this.list[e.mp.detail.value];
-      if (selectedValue != null) {
-        this.$emit('input', selectedValue[this.valueKey]);
-        this.$emit('change', selectedValue[this.valueKey]);
-      } else {
-        this.$emit('input', null);
-        this.$emit('change', null);
-      }
-    },
-  },
+      console.log(e)
+      this.index = e.mp.detail.value
+      this.$emit("change", this.list[this.index]);
+      // const selectedValue = this.list[e.mp.detail.value];
+      // if (selectedValue != null) {
+      //   this.$emit('input', selectedValue[this.valueKey]);
+      //   this.$emit('change', selectedValue[this.valueKey]);
+      // } else {
+      //   this.$emit('input', null);
+      //   this.$emit('change', null);
+      // }
+    }
+  }
 };
 </script>

@@ -1,7 +1,5 @@
 {
-    "baseURL": "https://api.offpay.cn/reseller/",
-    "ossURL": "https://api.offpay.cn/insider/oss-auth/",
-    "Bucket": "offpay-1256235662",
-    "Region": "ap-guangzhou",
-    "mapKey": "IUXBZ-ABF3X-NHT42-7PJQJ-65PUJ-F5FZW"
+  "isDev": false,
+  "baseURL": "https://api.offpay.cn/customer/",
+  "cellTextHeight": 56
 }

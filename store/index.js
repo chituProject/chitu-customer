@@ -1,79 +1,61 @@
-/* eslint-disable no-param-reassign */
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { cleanFormId } from '@/utils/adapter';
+import Vue from "vue";
+import Vuex from "vuex";
+import config from "@/utils/config.json";
+import { cleanFormId } from "@/utils/offpay";
+
+import app from "./app";
+import user from "./user";
+import utils from "./utils";
 
 Vue.use(Vuex);
-const store = new Vuex.Store({
-  state: {
-    isCreateFailed: false,
-    bankCards: [],
-    bankId: 0,
-    token: '',
-    openid: '',
-    uuid: '',
-    reseller: {},
-    formIds: [],
-    systemInfo: {},
-    userInfo: {},
+
+export const state = {
+  scene: "",
+  token: config.token,
+  formIds: []
+};
+
+export const mutations = {
+  SET_TOKEN: (state, token) => {
+    state.token = token;
+    console.log("token updated: ", state.token);
   },
-  mutations: {
-    SET_CREATE_FAILED: (state, flag) => {
-      state.isCreateFailed = flag;
-      console.log('isCreateFailed updated: ', flag);
-    },
-    SET_TOKEN: (state, token) => {
-      state.token = token;
-      console.log('token updated: ', token);
-    },
-    SET_OPENID: (state, openid) => {
-      state.openid = openid;
-      console.log('openid updated: ', openid);
-    },
-    SET_UUID: (state, uuid) => {
-      state.uuid = uuid;
-      console.log('uuid updated: ', uuid);
-    },
-    SET_SYSTEM_INFO: (state, info) => {
-      state.systemInfo = info;
-      console.log('system_info updated: ', info);
-    },
-    SET_USERINFO: (state, info) => {
-      state.userInfo = info;
-      console.log('userInfo updated: ', info);
-    },
-    SET_BANKCARDS: (state, bankCards) => {
-      state.bankCards = bankCards;
-      console.log('bankCards updated: ', bankCards);
-    },
-    SET_SELECTED_BANK: (state, bankId) => {
-      state.bankId = bankId;
-      console.log('SELECTED_BANK updated: ', bankId);
-    },
-    SET_RESELLER: (state, reseller) => {
-      state.reseller = reseller;
-      console.log('RESELLER updated: ', reseller);
-    },
-    ADD_FORMID: (state, id) => {
-      state.formIds.push(id);
-      console.log('formIds updated: ', state.formIds);
-    },
-    CLEAN_FORMID: (state) => {
-      state.formIds = [];
-      console.log('formIds cleaned');
-    },
+  // 设置场景值
+  SET_SCENE: (state, scene) => {
+    console.log("set scene: ", scene);
+    state.scene = scene;
   },
+  ADD_FORMID: (state, id) => {
+    state.formIds.push(id);
+    console.log("formIds updated: ", state.formIds);
+  },
+  CLEAN_FORMID: state => {
+    state.formIds = [];
+    console.log("formIds cleaned");
+  }
+};
+
+const store = {
+  modules: {
+    app,
+    user,
+    utils
+  },
+  state,
+  mutations,
   actions: {
     addFormId: ({ commit, state }, id) => {
       if (id) {
-        commit('ADD_FORMID', id);
+        commit("ADD_FORMID", id);
       }
-      // 每1个formID发一次
-      if (state.formIds && state.formIds.length > 0) {
+      // 每三个formID发一次
+      if (state.formIds && state.formIds.length > 3) {
         cleanFormId();
       }
-    },
-  },
-});
+    }
+  }
+};
 
-export default store;
+export default new Vuex.Store(store);
+
+export { store as storeObj };
