@@ -4,6 +4,32 @@
       "path": "pages/online/index/main"
     },
     {
+      "path": "pages/analysis/across",
+      "style": {
+        "navigationBarTitleText": "横向比较"
+      }
+    },
+    {
+      "path": "pages/analysis/test",
+      "style": {
+        "navigationBarTitleText": "横向比较"
+      }
+    },
+    {
+      "path": "pages/analysis/simulate",
+      "style": {
+        "navigationBarTitleText": "模拟组合",
+        "usingComponents": {
+          "van-icon": "/static/vant/dist/icon/index",
+          "van-field": "/static/vant/dist/field/index",
+          "van-button": "/static/vant/dist/button/index",
+          "van-divider": "/static/vant/dist/divider/index",
+          "van-datetime-picker": "/static/vant/dist/datetime-picker/index",
+          "van-popup": "/static/vant/dist/popup/index"
+        }
+      }
+    },
+    {
       "path":"pages/wxauth/main",
       "style": {
         "navigationBarTextStyle": "black",

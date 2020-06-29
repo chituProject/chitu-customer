@@ -57,6 +57,10 @@ export default {
   },
   onShow() {
     // this.disable = false;
+      if (this.hasLoggedIn) {
+          this.getAdmin();
+      }
+    //   this.getAdmin();
   }
 };
 </script>

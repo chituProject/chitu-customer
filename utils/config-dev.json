@@ -1,4 +1,4 @@
 {
   "isDev": true,
-  "baseURL": "https://dev.offpay.cn/customer/"
+  "baseURL": "http://dev.hackpku.com/customer/"
 }

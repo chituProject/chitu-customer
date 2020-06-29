@@ -27,6 +27,12 @@ export default {
         return [];
       },
     },
+    list1: {
+        type: Array,
+        default() {
+            return [];
+        },
+    },
     placeholder: {
       type: String,
       required: false
@@ -49,7 +55,7 @@ export default {
     changeSelect(e) {
       console.log(e)
       this.index = e.mp.detail.value
-      this.$emit("change", this.list[this.index]);
+      this.$emit("change", this.list[this.index],this.index);
       // const selectedValue = this.list[e.mp.detail.value];
       // if (selectedValue != null) {
       //   this.$emit('input', selectedValue[this.valueKey]);

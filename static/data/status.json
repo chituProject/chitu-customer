@@ -1,8 +1,9 @@
 {
-    "ADMIN_CONFIRMING": "等待客服处理",
-    "SUPPLIER_CONFIRMING": "等待客服处理",
-    "CUSTOMER_UNSHIPPED": "请填写回寄单号",
-    "CANCELED": "服务结束",
-    "CUSTOMER_SHIPPING": "等待回寄商品运送中",
-    "FINISHED": "服务结束"
+  "quantification": "量化",
+  "fixed__income": "固收",
+  "macro__hedging": "宏观对冲",
+  "pure__bull": "纯多头",
+  "long__short": "多空",
+  "combination": "复合",
+  "other": "其他"
 }

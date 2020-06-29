@@ -23,12 +23,10 @@ export const authMixin = {
         offpayAuth();
       } else if (!this.hasLoggedIn) {
         offpayAuth();
+      } else if (!this.hasAuth) {
+        navigateTo({ url: "/pages/wxauth/auth" });
       }
     });
-    console.log(this.hasAuth)
-    if (!this.hasAuth) {
-      navigateTo({ url: "/pages/wxauth/auth" });
-    }
   }
 };
 

@@ -99,8 +99,8 @@ const getters = {
     );
   },
   hasAuth: (state, getters, rootState, rootGetters) => {
-    const hasAuth = !!rootGetters["user/authorizeType"]
-    return !hasAuth;
+    const hasAuth = rootGetters["user/authorizeType"]
+    return hasAuth;
   }
 };
 
