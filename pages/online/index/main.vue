@@ -3,7 +3,7 @@
     <loading-animation :show-animation="showAnimation" />
     <div class="container">
       <div class="background" />
-      <div>
+      <div class="page_container">
         <div class="title">赤兔精选</div>
         <div class="contain">
           <offpay-select
