@@ -111,6 +111,13 @@ hr {
   align-items: center;
 }
 
+.flex-justify_around {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
 .flex-justify_center {
   display: -webkit-box;
   display: -webkit-flex;

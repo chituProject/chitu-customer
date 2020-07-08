@@ -57,7 +57,7 @@
               <view class="table">
                 <view class="tr" style="position: fixed">
                   <view class="th">基金经理</view>
-                  <view class="th th1">基金</view>
+                  <view class="th th1">基金名</view>
                   <view class="th th1">YTD</view>
                   <view class="th">最近三年</view>
                   <view class="th">滚动一年胜率</view>
@@ -65,10 +65,11 @@
                   <view class="th th1">策略</view>
                 </view>
                 <view
-                  v-for="(item, index) in list"
+                  v-for="(item, index) in list_manager"
                   :key="item.id"
                   class="tr"
                   :class="{ tr1: index == 0 }"
+                  @click="nav(`/pages/online/detail/main?id=${item.id}`)"
                 >
                   <view class="td">{{ item.manager }}</view>
                   <view class="td">{{ item.name }}</view>
@@ -81,9 +82,7 @@
                   <view class="td">{{
                     Math.floor(item.roll_year_win * 100) / 100 + "%"
                   }}</view>
-                  <view class="td">{{
-                    Math.floor(item.sharpe_ratio * 100) / 100 + "%"
-                  }}</view>
+                  <view class="td">{{ item.sharpe_ratio }}</view>
                   <view class="td">{{ strategyStatus[item.strategy] }}</view>
                 </view>
               </view>
@@ -92,8 +91,17 @@
         </view>
         <view>
           <view class="table">
-            <view v-for="(item, index) in list4" :key="item.id" class="tr">
-              <view class="td">{{ item.manager }}</view>
+            <view class="tr">
+              <view class="th">/</view>
+              <view class="th th1">基金名</view>
+              <view class="th th1">YTD</view>
+              <view class="th">最近三年</view>
+              <view class="th">滚动一年胜率</view>
+              <view class="th">夏普比率</view>
+              <view class="th th1">策略</view>
+            </view>
+            <view v-for="item in list_index" :key="item.id" class="tr">
+              <view class="td">/</view>
               <view class="td">{{ item.name }}</view>
               <view class="td">{{
                 Math.floor(item.ytd * 100) / 100 + "%"
@@ -111,15 +119,8 @@
             </view>
           </view>
         </view>
-        <view style="position: fixed;bottom: 0;display: flex" class="bottom">
-          <view class="buttons" @click="nav('/pages/analysis/simulate')"
-            >构建模拟组合</view
-          >
-          <view class="buttons" @click="nav('/pages/analysis/across')"
-            >指标横向比较</view
-          >
-        </view>
 
+        <funcBar></funcBar>
         <!--        <div v-for="(item,i) in list" :key="i" >-->
         <!--          {{item}}-->
         <!--        </div>-->
@@ -144,15 +145,16 @@ import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/select";
 import sibList from "@/components/sib-list/sib-list.vue";
+import funcBar from "@/components/funcBar";
 import strategyStatus from "@/static/data/status.json";
-// import addmp from "@/components/module/addMp";
 
 export default {
   components: {
     loadingAnimation,
     // eslint-disable-next-line vue/no-unused-components
     OffpaySelect,
-    sibList
+    sibList,
+    funcBar
   },
   mixins: [authMixin],
   data() {
@@ -164,8 +166,8 @@ export default {
       notMoreText: "",
       height: "640rpx",
       finished: false,
-      list: [],
-      list4: [],
+      list_manager: [],
+      list_index: [],
       page_num: 1,
       page_size: 20,
       type1: "按YTD排序",
@@ -239,7 +241,8 @@ export default {
     },
     isRefresh() {
       this.page_num = 1;
-      this.list = [];
+      this.list_manager = [];
+      this.list_index = [];
       this.fetchHomepage(this.$refs.sibList.endAfter());
     },
     async scrolltolowerFn() {
@@ -256,17 +259,20 @@ export default {
     },
     change1(item) {
       this.type1 = item;
-      this.list = [];
+      this.list_manager = [];
+      this.list_index = [];
       this.fetchHomepage();
     },
     change2(item) {
       this.type2 = item;
-      this.list = [];
+      this.list_manager = [];
+      this.list_index = [];
       this.fetchHomepage();
     },
     change3(item) {
       this.type3 = item;
-      this.list = [];
+      this.list_manager = [];
+      this.list_index = [];
       this.fetchHomepage();
     },
     onRefresh() {
@@ -291,35 +297,36 @@ export default {
         ordering: "",
         strategy: this.strategys[this.type3]
       };
-      if (this.list1.indexOf(this.type1) == 0) {
-        if (this.list2.indexOf(this.type2) == 0) {
+      if (this.list1.indexOf(this.type1) === 0) {
+        if (this.list2.indexOf(this.type2) === 0) {
           params.ordering += "-ytd";
         } else {
           params.ordering += "ytd";
         }
       }
-      if (this.list1.indexOf(this.type1) == 1) {
-        if (this.list2.indexOf(this.type2) == 0) {
+      if (this.list1.indexOf(this.type1) === 1) {
+        if (this.list2.indexOf(this.type2) === 0) {
           params.ordering += "-three_year_profit";
         } else {
           params.ordering += "three_year_profit";
         }
       }
-      if (this.list1.indexOf(this.type1) == 2) {
-        if (this.list2.indexOf(this.type2) == 0) {
+      if (this.list1.indexOf(this.type1) === 2) {
+        if (this.list2.indexOf(this.type2) === 0) {
           params.ordering += "-roll_year_win";
         } else {
           params.ordering += "roll_year_win";
         }
       }
-      if (this.list1.indexOf(this.type1) == 3) {
-        if (this.list2.indexOf(this.type2) == 0) {
+      if (this.list1.indexOf(this.type1) === 3) {
+        if (this.list2.indexOf(this.type2) === 0) {
           params.ordering += "-sharpe_ratio";
         } else {
           params.ordering += "sharpe_ratio";
         }
       }
-      this.list4 = [];
+      this.list_manager = [];
+      this.list_index = [];
       return this.$request({
         method: "GET",
         url: "fund_archive/",
@@ -339,16 +346,11 @@ export default {
         }
         rows.forEach(item => {
           if (item.type === "MANAGER") {
-            this.list.push(item);
+            this.list_manager.push(item);
           } else {
-            this.list4.push(item);
+            this.list_index.push(item);
           }
         });
-        // if (res.data.results[i].type === 'MANAGER') {
-        //
-        // } else {
-        //     this.index_funds.push(res.data.results[i])
-        // }
 
         // eslint-disable-next-line no-unused-expressions
         typeof callback === "function" && callback();
@@ -456,20 +458,5 @@ export default {
 }
 .th1 {
   line-height: 85upx;
-}
-.bottom {
-  width: 100%;
-  height: 98upx;
-  background-image: linear-gradient(#ffffff, #ffffff),
-    linear-gradient(#f5f5f5, #f5f5f5);
-  background-blend-mode: normal, normal;
-  box-shadow: 0px -1px 1px 0px rgba(187, 187, 187, 0.3);
-  display: flex;
-  justify-content: space-around;
-}
-.buttons {
-  color: #9a1f27;
-  font-size: 34upx;
-  line-height: 98upx;
 }
 </style>

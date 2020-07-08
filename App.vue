@@ -36,8 +36,4 @@ export default {
 };
 </script>
 
-<style>
-.van-tabs__wrap {
-  position: fixed !important;
-}
-</style>
+<style></style>
