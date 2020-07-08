@@ -2,8 +2,8 @@
  * 所有参数默认按微信小程序格式，调用时除了不加 wx. 都一样
  */
 import store from "@/store";
-import config from "./config.json";
 import Notify from "@/static/vant/notify/notify";
+import config from "./config.json";
 
 /**
  * 统一封装，工厂模式为了在找不到包的时候统一处理异常
@@ -282,8 +282,8 @@ export function getQuery(object) {
 export function notify(
   text,
   color = "#fff",
-  backgroundColor = "#f56250",
-  duration = 1500
+  backgroundColor = "#9a1f27",
+  duration = 1000
 ) {
   Notify({ text, color, backgroundColor, duration });
 }

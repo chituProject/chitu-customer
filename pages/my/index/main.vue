@@ -54,8 +54,6 @@
       <van-cell-group style="width: 100%;margin-top:12px;">
         <van-cell title="关于赤兔" icon="info-o" size="large" />
       </van-cell-group>
-
-      <funcBar></funcBar>
     </div>
   </container>
 </template>
@@ -67,12 +65,10 @@ import { fetchUserInfo, offpayAuth } from "@/utils/offpay";
 import { authMixin } from "@/utils/mixins";
 import config from "@/utils/config.json";
 import loadingAnimation from "@/components/loadingAnimation";
-import funcBar from "@/components/funcBar";
 
 export default {
   components: {
-    loadingAnimation,
-    funcBar
+    loadingAnimation
   },
   mixins: [authMixin],
   data() {

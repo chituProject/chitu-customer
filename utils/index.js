@@ -79,51 +79,6 @@ export function calEndTime(start_time, delta, mode = 0) {
   return `${y}年${m}月${d}日${h}点`;
 }
 
-export function formatGoods(list) {
-  if (!list) {
-    return [];
-  }
-  const list1 = [];
-  const list2 = [];
-  for (let i = 0; i < list.length; i += 1) {
-    if (Object.prototype.hasOwnProperty.call(list, i)) {
-      if (list[i].goods) {
-        if (i % 2 === 0) {
-          list1.push(list[i].goods);
-        } else {
-          list2.push(list[i].goods);
-        }
-      } else if (i % 2 === 0) {
-        list1.push(list[i]);
-      } else {
-        list2.push(list[i]);
-      }
-    }
-  }
-  return [list1, list2];
-}
-
-export function formatGoods3(list) {
-  if (!list) {
-    return [];
-  }
-  const list1 = [];
-  const list2 = [];
-  const list3 = [];
-  for (let i = 0; i < list.length; i += 1) {
-    if (Object.prototype.hasOwnProperty.call(list, i)) {
-      if (i % 3 === 0) {
-        list1.push(list[i]);
-      } else if (i % 3 === 1) {
-        list2.push(list[i]);
-      } else {
-        list3.push(list[i]);
-      }
-    }
-  }
-  return [list1, list2, list3];
-}
-
 export function deformatPrice(str) {
   const yuan = str.substring(1);
   return parseFloat(yuan) * 100;
@@ -238,13 +193,11 @@ export function getMi(disance) {
 }
 
 export function formatPercent(val) {
-  return `${(val * 100).toFixed(2)}%`;
+  return `${(parseFloat(val) * 100).toFixed(2)}%`;
 }
 
 export default {
   formatDay,
-  formatGoods,
-  formatGoods3,
   timeDeltaDay,
   timeDeltaSec,
   calEndTime,

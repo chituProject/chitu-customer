@@ -21,9 +21,9 @@
         size="large"
       />
     </van-cell-group>
-    <div v-show="activeIndex === 0">
+    <div v-show="activeIndex === 0" style="margin-top: 50upx;">
       <van-tabs type="card" color="#a5323a" animated="true">
-        <van-tab title="累计">
+        <van-tab title="累计" style="margin-top: 20upx;">
           <van-cell-group>
             <van-cell
               title="近一个月"
@@ -87,89 +87,91 @@
           </van-cell-group>
         </van-tab>
       </van-tabs>
-    </div>
-    <div v-show="activeIndex === 1">
-      <div style="margin-top: 60upx;">
-        <van-tabs type="card" color="#a5323a" animated="true">
-          <van-tab title="概述">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.general_infomation"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-          <van-tab title="运营">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.operation"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-          <van-tab title="条款">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.article"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-          <van-tab title="组合特征">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.combination"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-          <van-tab title="多头">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.long_positions"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-          <van-tab title="空头">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.short_positions"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-          <van-tab title="总体仓位">
-            <van-cell-group>
-              <van-cell
-                v-for="(item, index) in model.designed_exposure"
-                :key="index"
-                :title="item.key"
-                :value="item.value"
-                size="large"
-              />
-            </van-cell-group>
-          </van-tab>
-        </van-tabs>
+
+      <div style="justify-content: flex-end;display: flex;margin: 30upx 10upx">
+        数据更新至{{ latest_achievement.time }}
       </div>
+    </div>
+    <div v-show="activeIndex === 1" style="margin-top: 50upx;">
+      <van-tabs type="card" color="#a5323a" animated="true">
+        <van-tab title="概述" style="margin-top: 20upx;">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.general_infomation"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="运营" style="margin-top: 20upx;">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.operation"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="条款">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.article"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="组合特征">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.combination"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="多头">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.long_positions"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="空头">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.short_positions"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="总体仓位">
+          <van-cell-group>
+            <van-cell
+              v-for="(item, index) in model.designed_exposure"
+              :key="index"
+              :title="item.key"
+              :value="item.value"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+      </van-tabs>
     </div>
   </div>
 </template>

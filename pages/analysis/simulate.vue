@@ -1,10 +1,11 @@
 <template>
   <container>
+    <van-notify id="van-notify" />
     <loading-animation :show-animation="showAnimation" />
-    <view class="container">
-      <view class="background" />
-      <view class="page_container">
-        <view class="contain">
+    <div class="container">
+      <div class="background" />
+      <div class="page_container">
+        <div class="contain">
           <offpay-select
             style="margin-top: 10upx"
             :value="type1"
@@ -14,29 +15,29 @@
             @change="change1"
           >
           </offpay-select>
-          <input v-model="price" type="number" class="input" />
+          <input v-model="investment" type="number" class="input" />
           <span class="wan">万</span>
-          <view class="add" @click="add">添加</view>
-        </view>
-        <view v-for="(item, index) in ratioss" style="padding: 0 30upx">
-          <view class="item">
-            <view class="item_font">{{ item.name }}</view>
-            <view class="item_font">{{ item.price + "万" }}</view>
-            <view class="item_font">{{ item.ratio }}</view>
-            <!--            <view class="item_font" style="font-size: 30upx">x</view>-->
+          <div class="add" @click="addFund">添加</div>
+          <van-button size="small" color="#9a1f27" @click="simulationConfirm"
+            >确认</van-button
+          >
+        </div>
+        <div
+          v-for="(item, index) in selectedFunds"
+          :key="index"
+          style="padding: 0 30upx"
+        >
+          <div class="item">
+            <div class="item_font">{{ item.name }}</div>
+            <div class="item_font">{{ item.investment + "万" }}</div>
+            <div class="item_font">{{ item.propotion }}</div>
+            <!--            <div class="item_font" style="font-size: 30upx">x</div>-->
             <van-icon name="cross" @click="del(index)" />
-          </view>
-        </view>
-      </view>
-      <van-field
-        v-if="ratios.length > 0"
-        v-model="name"
-        label="组合名"
-        placeholder="请输入组合名"
-        style="width: 100%;margin-top: 10upx"
-      />
-      <view style="width: 100%">
-        <view
+          </div>
+        </div>
+      </div>
+      <div style="width: 100%">
+        <div
           v-if="show"
           style="display: flex;margin-left: 20upx;margin-top: 10upx"
         >
@@ -55,8 +56,8 @@
             @click="(show1 = true), (show = false)"
             >年化</van-button
           >
-        </view>
-        <view
+        </div>
+        <div
           v-if="show1"
           style="display: flex;margin-left: 20upx;margin-top: 10upx"
         >
@@ -75,47 +76,44 @@
             @click="(show1 = true), (show = false)"
             >年化</van-button
           >
-        </view>
-        <view style="background: #fff;margin-top: 10upx">
-          <view class="ratio" style="padding-top: 30upx">
-            <view>近一个月</view>
-            <view class="ratios">+9.56%</view>
-          </view>
+        </div>
+        <div style="background: #fff;margin-top: 10upx">
+          <div class="ratio" style="padding-top: 30upx">
+            <div>近一个月</div>
+            <div class="ratios">+9.56%</div>
+          </div>
           <van-divider />
-          <view class="ratio">
-            <view>今年以来</view>
-            <view class="ratios">+9.58%</view>
-          </view>
+          <div class="ratio">
+            <div>今年以来</div>
+            <div class="ratios">+9.58%</div>
+          </div>
           <van-divider />
-          <view class="ratio">
-            <view>最近一年</view>
-            <view class="ratios">+9.58%</view>
-          </view>
+          <div class="ratio">
+            <div>最近一年</div>
+            <div class="ratios">+9.58%</div>
+          </div>
           <van-divider />
-          <view class="ratio">
-            <view>最近三年</view>
-            <view class="ratios">+9.58%</view>
-          </view>
+          <div class="ratio">
+            <div>最近三年</div>
+            <div class="ratios">+9.58%</div>
+          </div>
           <van-divider />
-          <view class="ratio">
-            <view>最近五年</view>
-            <view class="ratios">+9.58%</view>
-          </view>
+          <div class="ratio">
+            <div>最近五年</div>
+            <div class="ratios">+9.58%</div>
+          </div>
           <van-divider />
-          <view class="ratio">
-            <view>夏普比率</view>
-            <view class="ratios">+9.58%</view>
-          </view>
+          <div class="ratio">
+            <div>夏普比率</div>
+            <div class="ratios">+9.58%</div>
+          </div>
           <van-divider />
-        </view>
-        <view
-          style="justify-content: flex-end;display: flex;margin: -5upx 10upx"
-          >数据更新至2020年5月</view
-        >
-        <view
+        </div>
+
+        <div
           style="margin-top: 25upx;background: #FFFFFF;width: 100%;padding: 25upx"
         >
-          <view style="display: flex;">
+          <div style="display: flex;">
             <div
               style="display:flex;height: 30upx;background: #fafafa;border-radius: 20upx;padding: 15upx"
               @click="popup1showbtn"
@@ -134,9 +132,9 @@
               </p>
               <div class="arrow-down" style="margin-left: 15upx"></div>
             </div>
-          </view>
+          </div>
 
-          <view class="qiun-charts">
+          <div class="qiun-charts">
             <canvas
               id="canvasLineA"
               canvas-id="canvasLineA"
@@ -150,7 +148,7 @@
             <!--              canvas-id="lazy-load-chart"-->
             <!--              :ec="ec"-->
             <!--            ></uni-ec-canvas>-->
-          </view>
+          </div>
           <!--          <div style="display:flex;height: 30upx;background: #fafafa;border-radius: 20upx;padding: 15upx;margin-left: 15upx">-->
           <!--            <p style="line-height: 30upx;color: #9a1f27">-->
           <!--              {{ data1 || '选择指数' }}-->
@@ -177,20 +175,19 @@
               @cancel="popup2 = false"
             />
           </van-popup>
-        </view>
-      </view>
-    </view>
+        </div>
+      </div>
+    </div>
   </container>
 </template>
 <script>
 /* eslint-disable no-underscore-dangle */
 
 import { mapGetters } from "vuex";
-import { navigateTo, getQuery } from "@/utils/adapter";
+import { navigateTo, getQuery, notify } from "@/utils/adapter";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/selectObject";
-import sibList from "@/components/sib-list/sib-list.vue";
 import uCharts from "@/components/u-charts/u-charts.js";
 
 let _self;
@@ -200,8 +197,7 @@ export default {
   components: {
     loadingAnimation,
     // eslint-disable-next-line vue/no-unused-components
-    OffpaySelect,
-    sibList
+    OffpaySelect
   },
   mixins: [authMixin],
   data() {
@@ -226,9 +222,9 @@ export default {
       list1: [],
       page_num: 1,
       type1: "-11",
-      detail: {},
-      details: [],
-      price: 0,
+      selectedFund: {},
+      selectedFunds: [],
+      investment: 0,
       total: 0,
       ratios: [],
       chartData: {
@@ -261,31 +257,27 @@ export default {
     // this.$refs.canvas.init(this.initChart)
   },
   computed: {
-    ...mapGetters("app", [
-      "options",
-      "systemInfo",
-      "wechatInfo",
-      "hasLoggedIn",
-      "isIpx"
-    ]),
-    ...mapGetters("user", ["user", "userInfo"]),
-    ratioss() {
-      let sum = 0;
-      this.ratios.map(row => {
-        sum += Number(row.price) * 1.0;
-      });
-      this.ratios.map(row => {
-        row.weight = row.price / sum;
-        row.ratio = `${(Number(row.weight) * 100).toFixed(2)}%`;
-      });
-      return this.ratios;
-    }
+    ...mapGetters("app", ["hasLoggedIn", "isIpx"]),
+    ...mapGetters("user", ["user", "userInfo"])
   },
   watch: {
     hasLoggedIn(val) {
       if (val) {
         this.getData(this.hideAnimation);
       }
+    },
+    selectedFunds: {
+      handler() {
+        let sum = 0;
+        this.selectedFunds.map(row => {
+          sum += row.investment * 1.0;
+        });
+        this.selectedFunds.map(row => {
+          row.weight = row.investment / sum;
+          row.propotion = `${(row.weight * 100).toFixed(2)}%`;
+        });
+      },
+      immediate: true
     }
   },
   onShow() {
@@ -374,11 +366,11 @@ export default {
     },
     onInput1(val) {
       this.popup2 = false;
-      this.data1 = this.$moment(val.detail).format("YYYY-MM");
+      this.data1 = this.$moment(val.selectedFund).format("YYYY-MM");
     },
     onInput(val) {
       this.popup = false;
-      this.data = this.$moment(val.detail).format("YYYY-MM");
+      this.data = this.$moment(val.selectedFund).format("YYYY-MM");
     },
     popup1showbtn() {
       this.popup = true;
@@ -395,21 +387,72 @@ export default {
     },
     del(index) {
       this.ratios.splice(index, 1);
-      this.details.splice(index, 1);
+      this.selectedFunds.splice(index, 1);
     },
-    add() {
-      this.total += this.price;
-      const item = {
-        name: this.detail.name,
-        price: this.price,
-        ratio: ((Number(this.price) / Number(this.total)) * 100).toFixed(2)
-      };
-      this.ratios.push(item);
-      this.details.push(this.detail);
+    addFund() {
+      if (!this.selectedFund.name) {
+        notify("请选择基金");
+        return;
+      }
+      if (this.investment <= 0) {
+        notify("请输入投资金额");
+        return;
+      }
+      this.confirmStage = 0;
+      let flag = false;
+      this.selectedFunds.map(item => {
+        if (item.name === this.selectedFund.name) {
+          notify("请不要重复添加同一基金");
+          flag = true;
+        }
+      });
+      if (flag) return;
+      this.total += this.investment;
+      this.selectedFund.investment = this.investment;
+      this.selectedFunds.push(this.selectedFund);
+    },
+    simulationConfirm() {
+      if (this.selectedFunds.length < 2) return;
+      this.loading = true;
+      const data = [];
+      this.selectedFunds.map(item => {
+        const tmp = {
+          fund_id: item.id,
+          weight: item.weight
+        };
+        data.push(tmp);
+      });
+      this.$request({
+        method: "POST",
+        url: "fund_archive/simulation/",
+        data
+      })
+        .then(([_, res]) => {
+          this.simulationTable = res.data.results;
+          this.simulationTableChart.setOption({
+            title: {
+              text: "净值"
+            },
+            xAxis: {
+              data: this.simulationTable.map(item => {
+                return item.time;
+              })
+            },
+            series: {
+              data: this.simulationTable.map(item => {
+                return parseFloat(item.net_worth);
+              })
+            }
+          });
+        })
+        .finally(() => {
+          this.confirmStage += 1;
+          this.loading = false;
+        });
     },
     change1(item, index) {
       this.type1 = item;
-      this.detail = this.list[index];
+      this.selectedFund = this.list[index];
     },
     nav(url) {
       navigateTo({ url });
@@ -420,10 +463,7 @@ export default {
     getData(callback) {
       return this.$request({
         method: "GET",
-        url: "fund_archive/",
-        data: {
-          page_size: 20
-        }
+        url: "fund_archive/"
       }).then(([_, res]) => {
         // eslint-disable-next-line no-unused-expressions
         this.list = res.data.results;
@@ -432,12 +472,6 @@ export default {
         });
         typeof callback === "function" && callback();
       });
-    },
-    initData() {
-      // “添加到我的小程序”
-      // if (this.options.scene !== 1089) {
-      //   this.addMp = true;
-      // }
     }
   },
   onShareAppMessage() {
@@ -475,11 +509,10 @@ export default {
 }
 .contain {
   display: flex;
-  flex-wrap: wrap;
-  padding: 0 30upx;
-  margin-bottom: 10upx;
+  align-items: center;
+  padding: 0 24upx;
+  margin: 50upx 0 10upx;
   /*position: fixed;*/
-  /*top: 82upx*/
 }
 .input-text {
   font-size: 28upx;

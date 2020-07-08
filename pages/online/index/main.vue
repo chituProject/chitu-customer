@@ -112,7 +112,7 @@
           </view>
         </view>
 
-        <funcBar></funcBar>
+        <!-- <funcBar></funcBar> -->
         <!--        <div v-for="(item,i) in list" :key="i" >-->
         <!--          {{item}}-->
         <!--        </div>-->
@@ -138,16 +138,15 @@ import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/select";
 import sibList from "@/components/sib-list/sib-list.vue";
-import funcBar from "@/components/funcBar";
+// import funcBar from "@/components/funcBar";
 import strategyStatus from "@/static/data/status.json";
 
 export default {
   components: {
     loadingAnimation,
-    // eslint-disable-next-line vue/no-unused-components
     OffpaySelect,
-    sibList,
-    funcBar
+    sibList
+    // funcBar
   },
   mixins: [authMixin],
   data() {
@@ -350,12 +349,6 @@ export default {
         typeof callback === "function" && callback();
       });
     }
-    // initData() {
-    // “添加到我的小程序”
-    // if (this.options.scene !== 1089) {
-    //   this.addMp = true;
-    // }
-    // }
   },
   onShareAppMessage() {
     wx.showShareMenu({

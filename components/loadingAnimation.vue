@@ -36,7 +36,7 @@ export default {
 
 .spinner > div {
   margin: 4rpx;
-  background-color: #f56250;
+  background-color: #a5323a;
   height: 100%;
   width: 12rpx;
   display: inline-block;

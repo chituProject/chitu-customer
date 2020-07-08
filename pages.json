@@ -43,7 +43,8 @@
           "van-button": "/static/vant/dist/button/index",
           "van-divider": "/static/vant/dist/divider/index",
           "van-datetime-picker": "/static/vant/dist/datetime-picker/index",
-          "van-popup": "/static/vant/dist/popup/index"
+          "van-popup": "/static/vant/dist/popup/index",
+          "van-notify": "/static/vant/notify/index"
         }
       }
     }, {
@@ -81,9 +82,19 @@
     "list": [
       {
         "pagePath": "pages/online/index/main",
+        "iconPath": "static/img/icons/tabBar/home.png",
+        "selectedIconPath": "static/img/icons/tabBar/home-selected.png",
+        "text": "发现"
+      },{
+        "pagePath": "pages/analysis/across",
         "iconPath": "static/img/icons/tabBar/recommend.png",
         "selectedIconPath": "static/img/icons/tabBar/recommend-selected.png",
-        "text": "发现"
+        "text": "横向比较"
+      },{
+        "pagePath": "pages/analysis/simulate",
+        "iconPath": "static/img/icons/tabBar/category.png",
+        "selectedIconPath": "static/img/icons/tabBar/category-selected.png",
+        "text": "模拟组合"
       },
       {
         "pagePath": "pages/my/index/main",
