@@ -7,7 +7,7 @@
         style="text-align:center;align-items:center;justify-content: center;"
       >
         <img
-          style="margin-bottom:20px;width:110px; height:48px;"
+          style="margin-bottom:20px;width:121px; height:99px;"
           src="/static/img/logo.png"
         />
         <button

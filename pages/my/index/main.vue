@@ -189,8 +189,4 @@ export default {
   line-height: 30rpx;
   background: transparent;
 }
-
-.yellow-color {
-  color: #f4c046;
-}
 </style>

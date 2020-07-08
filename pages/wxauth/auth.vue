@@ -1,15 +1,15 @@
 <template>
   <container>
-    <van-notify id="van-notify" />
     <div class="container _100vh">
-      <div
-        class="full"
-        style="text-align:center;align-items:center;justify-content: center;font-size: 36upx"
-      >
-        授权登陆失败<br /><br />
-        <span v-if="admin !== '{}'">联系经理：{{admin.fund_name}}</span><br />
-        <span v-if="admin !== '{}'">联系电话：{{admin.phone}}</span><br />
-        <span v-if="admin !== '{}'">联系邮箱：{{admin.email}}</span>
+      <img
+        style="width:121px; height:99px;margin:12vw 0;"
+        src="/static/img/logo.png"
+      />
+      <div class="full flex-jusitfy_center text">
+        授权登陆失败
+        <div>联系经理：{{ admin.fund_name }}</div>
+        <div>联系电话：{{ admin.phone }}</div>
+        <div>联系邮箱：{{ admin.email }}</div>
       </div>
     </div>
   </container>
@@ -23,7 +23,11 @@ export default {
     return {
       disable: false,
       login: false,
-      admin: {}
+      admin: {
+        fund_name: "",
+        phone: "",
+        email: ""
+      }
     };
   },
   computed: {
@@ -57,31 +61,24 @@ export default {
   },
   onShow() {
     // this.disable = false;
-      if (this.hasLoggedIn) {
-          this.getAdmin();
-      }
+    if (this.hasLoggedIn) {
+      this.getAdmin();
+    }
     //   this.getAdmin();
   }
 };
 </script>
 
-<style scoped>
-._opacity {
-  opacity: 0.6;
-}
-.userinfo-avatar {
-  overflow: hidden;
-  width: 60px;
-  height: 60px;
-  margin: auto;
-  padding: 15px;
-  border-radius: 10px;
-}
+<style scoped lang="scss">
 ._100vh {
-  height: 75vh;
   justify-content: center;
 }
-span {
-  font-size: 32upx;
+.text {
+  text-align: center;
+  font-size: 48upx;
+  div {
+    margin: 12upx 0;
+    font-size: 32upx;
+  }
 }
 </style>

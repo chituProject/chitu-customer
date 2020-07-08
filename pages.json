@@ -18,7 +18,13 @@
     {
       "path": "pages/analysis/across",
       "style": {
-        "navigationBarTitleText": "横向比较"
+        "navigationBarTitleText": "横向比较",
+        "usingComponents": {
+          "van-checkbox": "/static/vant/dist/checkbox/index",
+          "van-checkbox-group": "/static/vant/dist/checkbox-group/index",
+          "van-button": "/static/vant/dist/button/index",
+          "van-notify": "/static/vant/notify/index"
+        }
       }
     },
     {
@@ -49,12 +55,7 @@
         }
       }
     }, {
-      "path":"pages/wxauth/auth",
-      "style": {
-        "usingComponents": {
-          "van-notify": "/static/vant/notify/index"
-        }
-      }
+      "path":"pages/wxauth/auth"
     }, {
       "path":"pages/my/index/main",
       "style": {

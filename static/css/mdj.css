@@ -172,9 +172,9 @@ button{
 }
 
 .btn-main-reverse{
-  color:#f56250;
+  color:#9a1f27;
   background-color:#ffffff;
-  border: #f56250 1rpx solid;
+  border: #9a1f27 1rpx solid;
 }
 
 .btn-grey-reverse{
@@ -211,11 +211,6 @@ button{
 
 .btn-radius{
   border-radius: 8rpx;
-}
-
-.form-group{
-  width:87.5vw;
-  margin:25rpx;
 }
 
 /*font sizes:*/
@@ -278,51 +273,16 @@ button{
   -webkit-text-stroke-width:0;
 }
 
-.img-20 {
-  width: 40rpx;
-  height: 40rpx;
-}
-
-.img-75 {
-  width: 150rpx;
-  height: 150rpx;
-}
-
 
 /* 符合UI规范的类别 */
 /*colors:*/
-.main-color{ color:#f56250; }
-.second-color{ color:#fabb78; }
-.third-color{ color:#ec7348; }
+.main-color{ color:#9a1f27; }
 .white-color{ color: white; }
 .grey99-color{ color:#999; }
 .grey66-color{ color:#666; }
 .grey39-color{ color:#393939; }
 .grey93-color{ color: #938467; }
 
-/*texts:*/
-p{
-  font-size:30rpx;
-  line-height: 41rpx;
-  color: #666;
-}
-.normal {
-  font-size: 26rpx;
-  line-height: 39rpx;
-  color: #393939;
-}
-.explain {
-  font-size: 22rpx;
-  line-height: 33rpx;
-  color: #999;
-}
-.price {
-  font-size: 38rpx;
-  line-height: 49rpx;
-  color: #f56250;
-}
-
-/*page and margins*/
 /* tab panel */
 .panel{
   box-sizing:border-box;
@@ -404,7 +364,7 @@ p{
 }
 
 .background-main {
-  background-color: #f56250;
+  background-color: #9a1f27;
 }
 
 .hover-animation-active {
@@ -417,4 +377,60 @@ p{
   border-top: 4upx solid #9a1f27;
   border-right: 4upx solid #9a1f27;
   transform: rotate(135deg);
+}
+
+
+/* table */
+.table {
+  border: 1px solid #dadada;
+  border-right: 0;
+  border-bottom: 0;
+  /*width: 98%;*/
+}
+.tr {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.tr1 {
+  margin-top: 95upx;
+}
+.th {
+  flex-shrink: 0;
+}
+.th,
+.td {
+  padding: 6upx;
+  border-bottom: 1px solid #dadada;
+  border-right: 1px solid #dadada;
+  text-align: center;
+  height: 80upx;
+  line-height: 40upx;
+  /*width:100%*/
+  /*width: auto;*/
+  width: 94upx;
+  /*overflow: hidden;*/
+  word-wrap: break-word;
+  /*display: -webkit-box;*/
+  /*-webkit-box-orient:vertical;*/
+  /*-webkit-line-clamp: 2;*/
+  text-overflow: ellipsis;
+  text-overflow: -o-ellipsis-lastline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+/*.td {*/
+/*  width: 86upx;*/
+/*  overflow: hidden;*/
+/*}*/
+.th {
+  font-weight: 400;
+  background-color: #dadada;
+}
+.th1 {
+  line-height: 85upx;
 }

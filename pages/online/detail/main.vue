@@ -6,48 +6,89 @@
       :active-index="activeIndex"
       @indexChanged="navCallback"
     ></navBar>
+
+    <van-cell-group>
+      <van-cell title="基金名称" :value="model.name" size="large" />
+      <van-cell title="基金经理" :value="model.manager" size="large" />
+      <van-cell
+        title="基金类别"
+        :value="model.type === 'MANAGER' ? '经理基金' : '指数基金'"
+        size="large"
+      />
+      <van-cell
+        title="基金策略"
+        :value="fund_strategy_name[model.strategy]"
+        size="large"
+      />
+    </van-cell-group>
     <div v-show="activeIndex === 0">
-      <van-cell-group>
-        <van-cell
-          title="滚动一年收益"
-          :value="Math.floor(model.three_year_profit * 100) / 100 + '%'"
-          size="large"
-        />
-        <van-cell title="夏普比率" :value="model.sharpe_ratio" size="large" />
-        <van-cell
-          title="YTD"
-          :value="Math.floor(model.ytd * 100) / 100 + '%'"
-          size="large"
-        />
-        <van-cell
-          title="近三年收益率"
-          :value="Math.floor(model.ytd * 100) / 100 + '%'"
-          size="large"
-        />
-        <van-cell title="最大回撤" :value="model.max_fallback" size="large" />
-        <van-cell
-          title="最大回撤月份"
-          :value="model.max_fallback_created_at"
-          size="large"
-        />
-      </van-cell-group>
+      <van-tabs type="card" color="#a5323a" animated="true">
+        <van-tab title="累计">
+          <van-cell-group>
+            <van-cell
+              title="近一个月"
+              :value="formatPercent(latest_achievement.monthly_yield)"
+              size="large"
+            />
+            <van-cell
+              title="今年以来"
+              :value="Math.floor(model.ytd * 100) / 100 + '%'"
+              size="large"
+            />
+            <van-cell
+              title="最近一年"
+              :value="formatPercent(latest_achievement.one_year_profit)"
+              size="large"
+            />
+            <van-cell
+              title="最近二年"
+              :value="formatPercent(latest_achievement.two_year_profit)"
+              size="large"
+            />
+            <van-cell
+              title="最近三年"
+              :value="formatPercent(latest_achievement.three_year_profit)"
+              size="large"
+            />
+            <van-cell
+              title="最近五年"
+              :value="formatPercent(latest_achievement.five_year_profit)"
+              size="large"
+            />
+            <van-cell
+              title="夏普比率"
+              :value="model.sharpe_ratio"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+        <van-tab title="年化">
+          <van-cell-group>
+            <van-cell
+              title="最近一年"
+              :value="formatPercent(latest_achievement.one_year_annualized)"
+              size="large"
+            />
+            <van-cell
+              title="最近二年"
+              :value="formatPercent(latest_achievement.two_year_annualized)"
+              size="large"
+            />
+            <van-cell
+              title="最近三年"
+              :value="formatPercent(latest_achievement.three_year_annualized)"
+              size="large"
+            />
+            <van-cell
+              title="最近五年"
+              :value="formatPercent(latest_achievement.five_year_annualized)"
+              size="large"
+            />
+          </van-cell-group>
+        </van-tab>
+      </van-tabs>
     </div>
     <div v-show="activeIndex === 1">
-      <van-cell-group>
-        <van-cell title="基金名称" :value="model.name" size="large" />
-        <van-cell title="基金经理" :value="model.manager" size="large" />
-        <van-cell
-          title="基金类别"
-          :value="model.type === 'MANAGER' ? '经理基金' : '指数基金'"
-          size="large"
-        />
-        <van-cell
-          title="基金策略"
-          :value="fund_strategy_name[model.strategy]"
-          size="large"
-        />
-      </van-cell-group>
-
       <div style="margin-top: 60upx;">
         <van-tabs type="card" color="#a5323a" animated="true">
           <van-tab title="概述">
@@ -135,6 +176,7 @@
 
 <script>
 import navBar from "@/components/navBar.vue";
+import { formatPercent } from "@/utils/index";
 
 export default {
   components: {
@@ -144,7 +186,19 @@ export default {
     return {
       activeIndex: 0,
       navs: [{ title: "业绩信息" }, { title: "基金档案" }],
-      model: {},
+      model: {
+        fund_achievement: {
+          count: 0,
+          data: []
+        }
+      },
+      latest_achievement: {
+        monthly_yield: 0,
+        one_year_annualized: 0,
+        two_year_annualized: 0,
+        three_year_annualized: 0,
+        five_year_annualized: 0
+      },
       fund_strategy_name: {
         quantification: "量化",
         fixed__income: "固收",
@@ -157,16 +211,22 @@ export default {
     };
   },
   methods: {
+    formatPercent,
     getData(id) {
       this.$request({
         method: "GET",
         url: `fund_archive/${id}/`
       }).then(([_, res]) => {
         this.model = res.data;
+        this.latest_achievement = this.model.fund_achievement.data[
+          this.model.fund_achievement.data.length - 1
+        ];
       });
     },
     navCallback(e) {
-      console.log(e);
+      uni.setNavigationBarTitle({
+        title: this.navs[e].title
+      });
       this.activeIndex = e;
     }
   },
@@ -176,8 +236,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.test {
-  width: 100% !important;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -237,6 +237,10 @@ export function getMi(disance) {
   return `约${Math.floor(min)}分钟`;
 }
 
+export function formatPercent(val) {
+  return `${(val * 100).toFixed(2)}%`;
+}
+
 export default {
   formatDay,
   formatGoods,
@@ -253,5 +257,6 @@ export default {
   countBaseSale,
   // shorten
   getDisance,
-  getMi
+  getMi,
+  formatPercent
 };

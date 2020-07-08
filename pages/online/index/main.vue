@@ -73,14 +73,12 @@
                 >
                   <view class="td">{{ item.manager }}</view>
                   <view class="td">{{ item.name }}</view>
+                  <view class="td">{{ formatPercent(item.ytd) }}</view>
                   <view class="td">{{
-                    Math.floor(item.ytd * 100) / 100 + "%"
+                    formatPercent(item.three_year_profit)
                   }}</view>
                   <view class="td">{{
-                    Math.floor(item.three_year_profit * 100) / 100 + "%"
-                  }}</view>
-                  <view class="td">{{
-                    Math.floor(item.roll_year_win * 100) / 100 + "%"
+                    formatPercent(item.roll_year_win)
                   }}</view>
                   <view class="td">{{ item.sharpe_ratio }}</view>
                   <view class="td">{{ strategyStatus[item.strategy] }}</view>
@@ -98,24 +96,18 @@
               <view class="th">最近三年</view>
               <view class="th">滚动一年胜率</view>
               <view class="th">夏普比率</view>
-              <view class="th th1">策略</view>
+              <view class="th th1">/</view>
             </view>
             <view v-for="item in list_index" :key="item.id" class="tr">
               <view class="td">/</view>
               <view class="td">{{ item.name }}</view>
+              <view class="td">{{ formatPercent(item.ytd) }}</view>
               <view class="td">{{
-                Math.floor(item.ytd * 100) / 100 + "%"
+                formatPercent(item.three_year_profit)
               }}</view>
-              <view class="td">{{
-                Math.floor(item.three_year_profit * 100) / 100 + "%"
-              }}</view>
-              <view class="td">{{
-                Math.floor(item.roll_year_win * 100) / 100 + "%"
-              }}</view>
-              <view class="td">{{
-                Math.floor(item.sharpe_ratio * 100) / 100 + "%"
-              }}</view>
-              <view class="td">{{ strategyStatus[item.strategy] }}</view>
+              <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
+              <view class="td">{{ item.sharpe_ratio }}</view>
+              <view class="td">\</view>
             </view>
           </view>
         </view>
@@ -141,6 +133,7 @@
 
 import { mapGetters } from "vuex";
 import { navigateTo, getQuery } from "@/utils/adapter";
+import { formatPercent } from "@/utils/index";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/select";
@@ -222,13 +215,14 @@ export default {
   mounted() {
     console.log(this.isIpx);
     if (this.isIpx) {
-      this.height = "780rpx";
+      this.height = "780upx";
     }
     this.query = getQuery(this);
     // this.initData();
   },
   onShow() {},
   methods: {
+    formatPercent,
     // 刷新touch监听
     touchstart(e) {
       this.$refs.sibList.refreshStart(e);
@@ -405,58 +399,5 @@ export default {
 }
 .empty {
   margin-top: 1vh;
-}
-.table {
-  border: 1px solid #dadada;
-  border-right: 0;
-  border-bottom: 0;
-  /*width: 98%;*/
-}
-.tr {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-}
-.tr1 {
-  margin-top: 95upx;
-}
-.th {
-  flex-shrink: 0;
-}
-.th,
-.td {
-  padding: 6upx;
-  border-bottom: 1px solid #dadada;
-  border-right: 1px solid #dadada;
-  text-align: center;
-  height: 80upx;
-  line-height: 40upx;
-  /*width:100%*/
-  /*width: auto;*/
-  width: 94upx;
-  /*overflow: hidden;*/
-  word-wrap: break-word;
-  /*display: -webkit-box;*/
-  /*-webkit-box-orient:vertical;*/
-  /*-webkit-line-clamp: 2;*/
-  text-overflow: ellipsis;
-  text-overflow: -o-ellipsis-lastline;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-/*.td {*/
-/*  width: 86upx;*/
-/*  overflow: hidden;*/
-/*}*/
-.th {
-  font-weight: 400;
-  background-color: #dadada;
-}
-.th1 {
-  line-height: 85upx;
 }
 </style>
