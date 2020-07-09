@@ -122,6 +122,13 @@
           ></canvas>
         </view>
       </view>
+
+      <v-table
+        v-if="tableData.length > 0"
+        :columns="tableColumns"
+        :list="tableData"
+        :height="500"
+      ></v-table>
     </div>
     <div v-show="activeIndex === 1" style="margin-top: 50upx;">
       <van-tabs type="card" color="#a5323a" animated="true">
@@ -211,6 +218,7 @@
 import navBar from "@/components/navBar.vue";
 import { formatPercent, formatTimeMonth } from "@/utils/index";
 import uCharts from "@/components/u-charts/u-charts.js";
+import vTable from "@/components/table.vue";
 
 let _self;
 let canvaLineA = null;
@@ -218,7 +226,8 @@ let canvaColumn = null;
 
 export default {
   components: {
-    navBar
+    navBar,
+    vTable
   },
   data() {
     return {
@@ -249,7 +258,110 @@ export default {
       cWidth: "",
       cHeight: "",
       pixelRatio: 1,
-      chartData: {}
+      chartData: {},
+      tableData: [],
+      tableColumns: [
+        {
+          title: "月份",
+          key: "id",
+          $width: "60px"
+        },
+        {
+          title: "净值",
+          key: "net_worth",
+          $width: "60px"
+        },
+        {
+          title: "月收益率",
+          key: "monthly_yield",
+          $width: "60px"
+        },
+        {
+          title: "回撤",
+          key: "fallback",
+          $width: "60px"
+        },
+        {
+          title: "滚动12月",
+          key: "roll_year",
+          $width: "80px"
+        },
+        {
+          title: "滚动18月",
+          key: "roll_eighteen_month",
+          $width: "80px"
+        },
+        {
+          title: "滚动12月>0",
+          key: "roll_12_gt_0",
+          $width: "90px"
+        },
+        {
+          title: "滚动12月>10%",
+          key: "roll_12_gt_10",
+          $width: "100px"
+        },
+        {
+          title: "滚动18月>0",
+          key: "roll_18_gt_0",
+          $width: "90px"
+        },
+        {
+          title: "滚动18月>10%",
+          key: "roll_18_gt_10",
+          $width: "100px"
+        },
+        {
+          title: "夏普比率",
+          key: "sharpe_ratio",
+          $width: "60px"
+        },
+        {
+          title: "成立以来收益",
+          key: "profit",
+          $width: "90px"
+        },
+        {
+          title: "最近一年收益",
+          key: "one_year_profit",
+          $width: "90px"
+        },
+        {
+          title: "最近一年年化",
+          key: "one_year_annualized",
+          $width: "90px"
+        },
+        {
+          title: "最近两年收益",
+          key: "two_year_profit",
+          $width: "90px"
+        },
+        {
+          title: "最近两年年化",
+          key: "two_year_annualized",
+          $width: "90px"
+        },
+        {
+          title: "最近三年收益",
+          key: "three_year_profit",
+          $width: "90px"
+        },
+        {
+          title: "最近三年年化",
+          key: "three_year_annualized",
+          $width: "90px"
+        },
+        {
+          title: "最近五年收益",
+          key: "five_year_profit",
+          $width: "90px"
+        },
+        {
+          title: "最近五年年化",
+          key: "five_year_annualized",
+          $width: "90px"
+        }
+      ]
     };
   },
   methods: {
@@ -284,6 +396,29 @@ export default {
           ]
         };
         this.model.fund_achievement.data.map(mm => {
+          const tableRow = {
+            id: formatTimeMonth(mm.time),
+            net_worth: mm.net_worth,
+            monthly_yield: formatPercent(mm.monthly_yield),
+            fallback: formatPercent(mm.fallback),
+            roll_year: formatPercent(mm.roll_year),
+            roll_eighteen_month: formatPercent(mm.roll_eighteen_month),
+            roll_12_gt_0: formatPercent(mm.roll_12_gt_0),
+            roll_12_gt_10: formatPercent(mm.roll_12_gt_10),
+            roll_18_gt_0: formatPercent(mm.roll_18_gt_0),
+            roll_18_gt_10: formatPercent(mm.roll_18_gt_10),
+            sharpe_ratio: mm.sharpe_ratio,
+            profit: formatPercent(mm.profit),
+            one_year_profit: formatPercent(mm.one_year_profit),
+            one_year_annualized: formatPercent(mm.one_year_annualized),
+            two_year_profit: formatPercent(mm.two_year_profit),
+            two_year_annualized: formatPercent(mm.two_year_annualized),
+            three_year_profit: formatPercent(mm.three_year_profit),
+            three_year_annualized: formatPercent(mm.three_year_annualized),
+            five_year_profit: formatPercent(mm.five_year_profit),
+            five_year_annualized: formatPercent(mm.five_year_annualized)
+          };
+          this.tableData.push(tableRow);
           if (mm.time.substr(5, 2) === "01") {
             chartData.categories.push(formatTimeMonth(mm.time));
             chartDataColumn.categories.push(formatTimeMonth(mm.time));

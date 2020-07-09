@@ -193,6 +193,7 @@ export function getMi(disance) {
 }
 
 export function formatPercent(val) {
+  if (!val || parseFloat(val) === "NaN") return "无";
   return `${(parseFloat(val) * 100).toFixed(2)}%`;
 }
 

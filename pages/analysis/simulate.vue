@@ -1,45 +1,43 @@
 <template>
-  <container>
+  <div>
     <van-notify id="van-notify" />
     <loading-animation :show-animation="showAnimation" />
     <div class="container">
       <div class="background" />
-      <div class="page_container">
-        <div class="contain">
-          <offpay-select
-            style="margin-top: 10upx"
-            :value="type1"
-            :list="list1"
-            placeholder="请选择基金"
-            @change="change1"
-          >
-          </offpay-select>
-          <input v-model="investment" type="number" class="input" />
-          <span class="wan">万</span>
-          <div class="add" @click="addFund">添加</div>
-          <van-button size="small" color="#9a1f27" @click="simulationConfirm"
-            >确认</van-button
-          >
-        </div>
-        <div
-          v-for="(item, index) in selectedFunds"
-          :key="index"
-          style="padding: 0 30upx"
+      <div class="contain">
+        <offpay-select
+          style="margin-top: 10upx"
+          :value="type1"
+          :list="list1"
+          placeholder="请选择基金"
+          @change="change1"
         >
-          <div class="item">
-            <div class="item_font">{{ item.name }}</div>
-            <div class="item_font">{{ item.investment + "万" }}</div>
-            <div class="item_font">{{ item.propotion }}</div>
-            <!--            <div class="item_font" style="font-size: 30upx">x</div>-->
-            <van-icon name="cross" @click="del(index)" />
-          </div>
+        </offpay-select>
+        <input v-model="investment" type="number" class="input" />
+        <span class="wan">万</span>
+        <div class="add" @click="addFund">添加</div>
+        <van-button size="small" color="#9a1f27" @click="simulationConfirm"
+          >确认</van-button
+        >
+      </div>
+      <div
+        v-for="(item, index) in selectedFunds"
+        :key="index"
+        style="padding: 0 30upx"
+      >
+        <div class="item">
+          <div class="item_font">{{ item.name }}</div>
+          <div class="item_font">{{ item.investment + "万" }}</div>
+          <div class="item_font">{{ item.propotion }}</div>
+          <!--            <div class="item_font" style="font-size: 30upx">x</div>-->
+          <van-icon name="cross" @click="del(index)" />
         </div>
       </div>
-      <div style="width: 100%">
-        <div
-          style="margin-top: 25upx;background: #FFFFFF;width: 100%;padding: 25upx"
-        >
-          <div style="display: flex;">
+    </div>
+    <div
+      style="margin-top: 25upx;background: #FFFFFF;width: 100%;padding: 25upx"
+    >
+      <!-- <div style="display: flex;">
             <div
               style="display:flex;height: 30upx;background: #fafafa;border-radius: 20upx;padding: 15upx"
               @click="popup1showbtn"
@@ -58,48 +56,54 @@
               </p>
               <div class="arrow-down" style="margin-left: 15upx"></div>
             </div>
-          </div>
+          </div> -->
 
-          <view class="qiun-columns">
-            <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
-              <view class="qiun-title-dot-light">净值</view>
-            </view>
-            <view class="qiun-charts">
-              <canvas
-                id="canvasLineA"
-                canvas-id="canvasLineA"
-                class="charts"
-                disable-scroll="true"
-                @touchstart="touchLineA"
-                @touchmove="moveLineA"
-                @touchend="touchEndLineA"
-              ></canvas>
-            </view>
-          </view>
-          <van-popup :show="popup" position="bottom">
-            <van-datetime-picker
-              type="year-month"
-              :value="currentDate"
-              title="选择年月"
-              :formatter="formatter"
-              @confirm="onInput"
-              @cancel="popup = false"
-            />
-          </van-popup>
-          <van-popup :show="popup2" position="bottom">
-            <van-datetime-picker
-              type="year-month"
-              :value="currentDate"
-              title="选择年月"
-              :formatter="formatter"
-              @confirm="onInput1"
-              @cancel="popup2 = false"
-            />
-          </van-popup>
-        </div>
-      </div>
+      <view v-show="chartData.series[0].data.length > 0" class="qiun-columns">
+        <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+          <view class="qiun-title-dot-light">净值</view>
+        </view>
+        <view class="qiun-charts">
+          <canvas
+            id="canvasLineA"
+            canvas-id="canvasLineA"
+            class="charts"
+            disable-scroll="true"
+            @touchstart="touchLineA"
+            @touchmove="moveLineA"
+            @touchend="touchEndLineA"
+          ></canvas>
+        </view>
+      </view>
+
+      <v-table
+        v-if="tableData.length > 0"
+        :columns="tableColumns"
+        :list="tableData"
+        :height="500"
+      ></v-table>
+
+      <van-popup :show="popup" position="bottom">
+        <van-datetime-picker
+          type="year-month"
+          :value="currentDate"
+          title="选择年月"
+          :formatter="formatter"
+          @confirm="onInput"
+          @cancel="popup = false"
+        />
+      </van-popup>
+      <van-popup :show="popup2" position="bottom">
+        <van-datetime-picker
+          type="year-month"
+          :value="currentDate"
+          title="选择年月"
+          :formatter="formatter"
+          @confirm="onInput1"
+          @cancel="popup2 = false"
+        />
+      </van-popup>
     </div>
-  </container>
+  </div>
 </template>
 <script>
 /* eslint-disable no-underscore-dangle */
@@ -111,6 +115,7 @@ import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/selectObject";
 import uCharts from "@/components/u-charts/u-charts.js";
+import vTable from "@/components/table.vue";
 
 let _self;
 let canvaLineA = null;
@@ -118,8 +123,8 @@ let canvaLineA = null;
 export default {
   components: {
     loadingAnimation,
-    // eslint-disable-next-line vue/no-unused-components
-    OffpaySelect
+    OffpaySelect,
+    vTable
   },
   mixins: [authMixin],
   data() {
@@ -141,7 +146,29 @@ export default {
       total: 0,
       chartData: {},
       pixelRatio: 1,
-      serverData: ""
+      tableData: [],
+      tableColumns: [
+        {
+          title: "月份",
+          key: "id",
+          $width: "60px"
+        },
+        {
+          title: "净值",
+          key: "net_worth",
+          $width: "60px"
+        },
+        {
+          title: "月收益率",
+          key: "monthly_yield",
+          $width: "60px"
+        },
+        {
+          title: "回撤",
+          key: "fallback",
+          $width: "60px"
+        }
+      ]
     };
   },
   onLoad() {
@@ -178,9 +205,6 @@ export default {
     this.query = getQuery(this);
     if (this.hasLoggedIn) {
       this.getData(this.hideAnimation);
-      // setTimeout(()=>{
-      //     this.getServerData()
-      // },1000) // 两秒之后延迟加载
     }
   },
   methods: {
@@ -305,7 +329,6 @@ export default {
         data
       })
         .then(([_, res]) => {
-          // TODO: add chartData
           const chartData = {
             categories: [],
             series: [
@@ -317,6 +340,13 @@ export default {
             ]
           };
           res.data.results.map(mm => {
+            const tableRow = {
+              id: formatTimeMonth(mm.time),
+              net_worth: mm.net_worth,
+              monthly_yield: formatPercent(mm.monthly_yield),
+              fallback: formatPercent(mm.fallback)
+            };
+            this.tableData.push(tableRow);
             if (mm.time.substr(5, 2) === "01") {
               chartData.categories.push(formatTimeMonth(mm.time));
             } else {
