@@ -91,6 +91,23 @@
       <div style="justify-content: flex-end;display: flex;margin: 30upx 10upx">
         数据更新至{{ latest_achievement.time }}
       </div>
+
+      <view class="qiun-columns">
+        <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+          <view class="qiun-title-dot-light">净值</view>
+        </view>
+        <view class="qiun-charts">
+          <canvas
+            id="canvasLineA"
+            canvas-id="canvasLineA"
+            class="charts"
+            disable-scroll="true"
+            @touchstart="touchLineA"
+            @touchmove="moveLineA"
+            @touchend="touchEndLineA"
+          ></canvas>
+        </view>
+      </view>
     </div>
     <div v-show="activeIndex === 1" style="margin-top: 50upx;">
       <van-tabs type="card" color="#a5323a" animated="true">
@@ -178,7 +195,11 @@
 
 <script>
 import navBar from "@/components/navBar.vue";
-import { formatPercent } from "@/utils/index";
+import { formatPercent, formatTimeMonth } from "@/utils/index";
+import uCharts from "@/components/u-charts/u-charts.js";
+
+let _self;
+let canvaLineA = null;
 
 export default {
   components: {
@@ -209,7 +230,11 @@ export default {
         long__short: "多空",
         combination: "复合",
         other: "其他"
-      }
+      },
+      cWidth: "",
+      cHeight: "",
+      pixelRatio: 1,
+      chartData: {}
     };
   },
   methods: {
@@ -223,6 +248,22 @@ export default {
         this.latest_achievement = this.model.fund_achievement.data[
           this.model.fund_achievement.data.length - 1
         ];
+        const chartData = {
+          categories: [],
+          series: [
+            {
+              name: res.data.name,
+              data: [],
+              color: "#9a1f27"
+            }
+          ]
+        };
+        this.model.fund_achievement.data.map(mm => {
+          chartData.categories.push(formatTimeMonth(mm.time));
+          chartData.series[0].data.push(mm.net_worth);
+        });
+        this.chartData = chartData;
+        this.initChart();
       });
     },
     navCallback(e) {
@@ -230,6 +271,69 @@ export default {
         title: this.navs[e].title
       });
       this.activeIndex = e;
+    },
+    initChart() {
+      _self = this;
+      this.cWidth = uni.upx2px(750);
+      this.cHeight = uni.upx2px(500);
+      this.showLineA("canvasLineA", this.chartData);
+    },
+    showLineA(canvasId, chartData) {
+      canvaLineA = new uCharts({
+        $this: _self,
+        canvasId,
+        type: "line",
+        fontSize: 10,
+        legend: { show: true },
+        dataLabel: false,
+        dataPointShape: true,
+        background: "#FFFFFF",
+        pixelRatio: _self.pixelRatio,
+        categories: chartData.categories,
+        series: chartData.series,
+        enableScroll: true,
+        animation: false,
+        xAxis: {
+          type: "grid",
+          gridColor: "#CCCCCC",
+          gridType: "dash",
+          itemCount: 7,
+          dashLength: 6,
+          scrollAlign: "right"
+        },
+        yAxis: {
+          gridType: "dash",
+          gridColor: "#CCCCCC",
+          dashLength: 6,
+          splitNumber: 4,
+          min: 0,
+          format: val => {
+            return `${val.toFixed(2)}`;
+          }
+        },
+        width: _self.cWidth * _self.pixelRatio,
+        height: _self.cHeight * _self.pixelRatio,
+        extra: {
+          line: {
+            type: "straight"
+          }
+        }
+      });
+    },
+    touchLineA(e) {
+      canvaLineA.scrollStart(e);
+    },
+    moveLineA(e) {
+      canvaLineA.scroll(e);
+    },
+    touchEndLineA(e) {
+      canvaLineA.scrollEnd(e);
+      // 下面是toolTip事件，如果滚动后不需要显示，可不填写
+      canvaLineA.showToolTip(e, {
+        format(item, category) {
+          return `${category} ${item.name}:${item.data}`;
+        }
+      });
     }
   },
   onLoad(option) {
@@ -238,4 +342,23 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/*样式的width和height一定要与定义的cWidth和cHeight相对应*/
+.qiun-title {
+  width: 750upx;
+  height: 500upx;
+  background-color: #ffffff;
+}
+
+.qiun-charts {
+  width: 750upx;
+  height: 500upx;
+  background-color: #ffffff;
+}
+
+.charts {
+  width: 750upx;
+  height: 500upx;
+  background-color: #ffffff;
+}
+</style>

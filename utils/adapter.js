@@ -203,6 +203,7 @@ function requestInterceptor(args) {
   if (header.noToken) {
     header = {};
   }
+  // header['content-type'] = 'application/x-www-form-urlencoded'
   args.url = config.baseURL.concat(args.url);
   args.header = header;
 }

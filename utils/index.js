@@ -196,6 +196,16 @@ export function formatPercent(val) {
   return `${(parseFloat(val) * 100).toFixed(2)}%`;
 }
 
+export function formatTimeMonth(tt) {
+  if (!tt) {
+    return "无";
+  }
+  const a = tt.split("-");
+  const y = a[0];
+  const m = a[1];
+  return `${y}-${m}`;
+}
+
 export default {
   formatDay,
   timeDeltaDay,
@@ -211,5 +221,6 @@ export default {
   // shorten
   getDisance,
   getMi,
-  formatPercent
+  formatPercent,
+  formatTimeMonth
 };

@@ -1,5 +1,4 @@
 {
   "isDev": false,
-  "baseURL": "https://api.offpay.cn/customer/",
-  "cellTextHeight": 56
+  "baseURL": "https://api.chitooasso.com/customer/"
 }

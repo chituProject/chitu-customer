@@ -28,12 +28,6 @@
       }
     },
     {
-      "path": "pages/analysis/test",
-      "style": {
-        "navigationBarTitleText": "横向比较"
-      }
-    },
-    {
       "path": "pages/analysis/simulate",
       "style": {
         "navigationBarTitleText": "模拟组合",
