@@ -107,6 +107,20 @@
             @touchend="touchEndLineA"
           ></canvas>
         </view>
+        <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+          <view class="qiun-title-dot-light">回撤</view>
+        </view>
+        <view class="qiun-charts">
+          <canvas
+            id="canvaColumn"
+            canvas-id="canvaColumn"
+            class="charts"
+            disable-scroll="true"
+            @touchstart="touchColumn"
+            @touchmove="moveColumn"
+            @touchend="touchEndColumn"
+          ></canvas>
+        </view>
       </view>
     </div>
     <div v-show="activeIndex === 1" style="margin-top: 50upx;">
@@ -200,6 +214,7 @@ import uCharts from "@/components/u-charts/u-charts.js";
 
 let _self;
 let canvaLineA = null;
+let canvaColumn = null;
 
 export default {
   components: {
@@ -258,11 +273,29 @@ export default {
             }
           ]
         };
+        const chartDataColumn = {
+          categories: [],
+          series: [
+            {
+              name: res.data.name,
+              data: [],
+              color: "#9a1f27"
+            }
+          ]
+        };
         this.model.fund_achievement.data.map(mm => {
-          chartData.categories.push(formatTimeMonth(mm.time));
+          if (mm.time.substr(5, 2) === "01") {
+            chartData.categories.push(formatTimeMonth(mm.time));
+            chartDataColumn.categories.push(formatTimeMonth(mm.time));
+          } else {
+            chartData.categories.push("");
+            chartDataColumn.categories.push("");
+          }
           chartData.series[0].data.push(mm.net_worth);
+          chartDataColumn.series[0].data.push(Math.abs(mm.fallback));
         });
         this.chartData = chartData;
+        this.chartDataColumn = chartDataColumn;
         this.initChart();
       });
     },
@@ -277,6 +310,7 @@ export default {
       this.cWidth = uni.upx2px(750);
       this.cHeight = uni.upx2px(500);
       this.showLineA("canvasLineA", this.chartData);
+      this.showColumn("canvaColumn", this.chartDataColumn);
     },
     showLineA(canvasId, chartData) {
       canvaLineA = new uCharts({
@@ -292,20 +326,16 @@ export default {
         categories: chartData.categories,
         series: chartData.series,
         enableScroll: true,
-        animation: false,
         xAxis: {
-          type: "grid",
-          gridColor: "#CCCCCC",
-          gridType: "dash",
-          itemCount: 7,
-          dashLength: 6,
+          disableGrid: true,
+          itemCount: 12,
           scrollAlign: "right"
         },
         yAxis: {
           gridType: "dash",
           gridColor: "#CCCCCC",
-          dashLength: 6,
-          splitNumber: 4,
+          dashLength: 3,
+          splitNumber: 6,
           min: 0,
           format: val => {
             return `${val.toFixed(2)}`;
@@ -334,6 +364,62 @@ export default {
           return `${category} ${item.name}:${item.data}`;
         }
       });
+    },
+    showColumn(canvasId, chartData) {
+      canvaColumn = new uCharts({
+        $this: _self,
+        canvasId,
+        type: "column",
+        legend: { show: false },
+        fontSize: 11,
+        background: "#FFFFFF",
+        pixelRatio: _self.pixelRatio,
+        animation: true,
+        categories: chartData.categories,
+        series: chartData.series,
+        enableScroll: true,
+        xAxis: {
+          disableGrid: true,
+          itemCount: 12,
+          scrollAlign: "right"
+        },
+        yAxis: {
+          gridType: "dash",
+          gridColor: "#CCCCCC",
+          dashLength: 4,
+          format: val => {
+            return `${val.toFixed(2)}`;
+          }
+        },
+        dataLabel: true,
+        width: _self.cWidth * _self.pixelRatio,
+        height: _self.cHeight * _self.pixelRatio,
+        extra: {
+          column: {
+            type: "group",
+            width:
+              (_self.cWidth * _self.pixelRatio * 0.45) /
+              chartData.categories.length
+          }
+        }
+      });
+    },
+    touchColumn(e) {
+      canvaColumn.scrollStart(e);
+    },
+    moveColumn(e) {
+      canvaColumn.scroll(e);
+    },
+    touchEndColumn(e) {
+      canvaColumn.scrollEnd(e);
+      canvaColumn.showToolTip(e, {
+        format(item, category) {
+          if (typeof item.data === "object") {
+            return `${category} ${item.name}:${item.data.value}`;
+          }
+          return `${category} ${item.name}:${item.data}`;
+        }
+      });
     }
   },
   onLoad(option) {
@@ -344,10 +430,27 @@ export default {
 
 <style lang="scss" scoped>
 /*样式的width和height一定要与定义的cWidth和cHeight相对应*/
-.qiun-title {
-  width: 750upx;
-  height: 500upx;
-  background-color: #ffffff;
+
+.qiun-columns {
+  display: flex;
+  flex-direction: column !important;
+}
+.qiun-common-mt {
+  margin-top: 10upx;
+}
+.qiun-bg-white {
+  background: #ffffff;
+}
+.qiun-title-bar {
+  width: 96%;
+  padding: 10upx 2%;
+  flex-wrap: nowrap;
+}
+.qiun-title-dot-light {
+  border-left: 10upx solid #9a1f27;
+  padding-left: 10upx;
+  font-size: 32upx;
+  color: #000000;
 }
 
 .qiun-charts {

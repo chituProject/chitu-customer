@@ -364,6 +364,7 @@ export default {
 
 <style scoped lang="scss">
 .container {
+  overflow-x: hidden;
   align-items: flex-start;
 }
 .title {

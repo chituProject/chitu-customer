@@ -10,7 +10,6 @@
             style="margin-top: 10upx"
             :value="type1"
             :list="list1"
-            label-key="name"
             placeholder="请选择基金"
             @change="change1"
           >
@@ -61,27 +60,22 @@
             </div>
           </div>
 
-          <div class="qiun-charts">
-            <canvas
-              id="canvasLineA"
-              canvas-id="canvasLineA"
-              class="charts"
-              @touchstart="touchLineA"
-            ></canvas>
-            <!--            <uni-ec-canvas-->
-            <!--              class="uni-ec-canvas"-->
-            <!--              id="line-chart"-->
-            <!--              ref="canvas"-->
-            <!--              canvas-id="lazy-load-chart"-->
-            <!--              :ec="ec"-->
-            <!--            ></uni-ec-canvas>-->
-          </div>
-          <!--          <div style="display:flex;height: 30upx;background: #fafafa;border-radius: 20upx;padding: 15upx;margin-left: 15upx">-->
-          <!--            <p style="line-height: 30upx;color: #9a1f27">-->
-          <!--              {{ data1 || '选择指数' }}-->
-          <!--            </p>-->
-          <!--            <div class="arrow-down" style="margin-left: 15upx"></div>-->
-          <!--          </div>-->
+          <view class="qiun-columns">
+            <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+              <view class="qiun-title-dot-light">净值</view>
+            </view>
+            <view class="qiun-charts">
+              <canvas
+                id="canvasLineA"
+                canvas-id="canvasLineA"
+                class="charts"
+                disable-scroll="true"
+                @touchstart="touchLineA"
+                @touchmove="moveLineA"
+                @touchend="touchEndLineA"
+              ></canvas>
+            </view>
+          </view>
           <van-popup :show="popup" position="bottom">
             <van-datetime-picker
               type="year-month"
@@ -112,6 +106,7 @@
 
 import { mapGetters } from "vuex";
 import { navigateTo, getQuery, notify } from "@/utils/adapter";
+import { formatPercent, formatTimeMonth } from "@/utils/index";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/selectObject";
@@ -136,42 +131,15 @@ export default {
       popup: false,
       popup2: false,
       currentDate: new Date(),
-      show1: false,
-      show: true,
-      name: "",
-      triggered: false,
       showAnimation: true,
-      // addMp: false,
-      notMoreText: "",
-      height: "560rpx",
-      finished: false,
       list: [],
       list1: [],
-      page_num: 1,
       type1: "-11",
       selectedFund: {},
       selectedFunds: [],
       investment: 0,
       total: 0,
-      ratios: [],
-      chartData: {
-        categories: ["2012", "2013", "2014", "2015", "2016", "2017"],
-        series: [
-          {
-            name: "成交量A",
-            data: [35, 20, 25, 37, 4, 20],
-            color: "#000000"
-          },
-          {
-            name: "成交量B",
-            data: [70, 40, 65, 100, 44, 68]
-          },
-          {
-            name: "成交量C",
-            data: [100, 80, 95, 150, 112, 132]
-          }
-        ]
-      },
+      chartData: {},
       pixelRatio: 1,
       serverData: ""
     };
@@ -180,8 +148,7 @@ export default {
     _self = this;
     this.cWidth = uni.upx2px(700);
     this.cHeight = uni.upx2px(500);
-    this.getServerData();
-    // this.$refs.canvas.init(this.initChart)
+    this.initChart();
   },
   computed: {
     ...mapGetters("app", ["hasLoggedIn", "isIpx"]),
@@ -215,76 +182,60 @@ export default {
       //     this.getServerData()
       // },1000) // 两秒之后延迟加载
     }
-
-    // _self.showLineA("canvasLineA",this.chartData);
-  },
-  mounted() {
-    // this.$nextTick(()=>{
-    //     this.showLineA(this.chartData)
-    // })
   },
   methods: {
-    // initChart(canvas, width, height, canvasDpr) {
-    //     console.log(canvas, width, height, canvasDpr)
-    //       chart = echarts.init(canvas, null, {
-    //         width: width,
-    //         height: height,
-    //         devicePixelRatio: canvasDpr
-    //     })
-    //     canvas.setChart(chart)
-    //     chart.setOption(this.option)
-    //     return chart
-    // },
-    getServerData() {
-      uni.request({
-        url:
-          "https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata2",
-        data: {},
-        success: res => {
-          console.log(res.data.data);
-          // 下面这个根据需要保存后台数据，我是为了模拟更新柱状图，所以存下来了
-          this.serverData = res.data.data;
-          const Column = { categories: [], series: [] };
-          // 这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
-          Column.categories = res.data.data.Column.categories;
-          // 这里的series数据是后台做好的，如果您的数据没有和前面我注释掉的格式一样，请自行拼接数据
-          Column.series = res.data.data.Column.series;
-          this.showColumn("canvasLineA", Column);
-        },
-        fail: () => {
-          console.log("网络错误，小程序端请检查合法域名");
-        }
-      });
+    initChart() {
+      _self = this;
+      this.cWidth = uni.upx2px(750);
+      this.cHeight = uni.upx2px(500);
     },
-    showColumn(canvasId, chartData) {
+    showLineA(canvasId, chartData) {
       canvaLineA = new uCharts({
         $this: _self,
         canvasId,
-        type: "column",
-        legend: true,
-        fontSize: 11,
+        type: "line",
+        fontSize: 10,
+        legend: { show: true },
+        dataLabel: false,
+        dataPointShape: true,
         background: "#FFFFFF",
         pixelRatio: _self.pixelRatio,
-        animation: true,
         categories: chartData.categories,
         series: chartData.series,
+        enableScroll: true,
         xAxis: {
-          disableGrid: true
+          disableGrid: true,
+          itemCount: 12,
+          scrollAlign: "right"
         },
-        yAxis: {},
-        dataLabel: true,
+        yAxis: {
+          gridType: "dash",
+          gridColor: "#CCCCCC",
+          dashLength: 3,
+          splitNumber: 6,
+          min: 0,
+          format: val => {
+            return `${val.toFixed(2)}`;
+          }
+        },
         width: _self.cWidth * _self.pixelRatio,
         height: _self.cHeight * _self.pixelRatio,
         extra: {
-          column: {
-            width:
-              (_self.cWidth * _self.pixelRatio * 0.45) /
-              chartData.categories.length
+          line: {
+            type: "straight"
           }
         }
       });
     },
     touchLineA(e) {
+      canvaLineA.scrollStart(e);
+    },
+    moveLineA(e) {
+      canvaLineA.scroll(e);
+    },
+    touchEndLineA(e) {
+      canvaLineA.scrollEnd(e);
+      // 下面是toolTip事件，如果滚动后不需要显示，可不填写
       canvaLineA.showToolTip(e, {
         format(item, category) {
           return `${category} ${item.name}:${item.data}`;
@@ -313,7 +264,6 @@ export default {
       return val;
     },
     del(index) {
-      this.ratios.splice(index, 1);
       this.selectedFunds.splice(index, 1);
     },
     addFund() {
@@ -355,22 +305,27 @@ export default {
         data
       })
         .then(([_, res]) => {
-          this.simulationTable = res.data.results;
-          this.simulationTableChart.setOption({
-            title: {
-              text: "净值"
-            },
-            xAxis: {
-              data: this.simulationTable.map(item => {
-                return item.time;
-              })
-            },
-            series: {
-              data: this.simulationTable.map(item => {
-                return parseFloat(item.net_worth);
-              })
+          // TODO: add chartData
+          const chartData = {
+            categories: [],
+            series: [
+              {
+                name: "模拟组合",
+                data: [],
+                color: "#9a1f27"
+              }
+            ]
+          };
+          res.data.results.map(mm => {
+            if (mm.time.substr(5, 2) === "01") {
+              chartData.categories.push(formatTimeMonth(mm.time));
+            } else {
+              chartData.categories.push("");
             }
+            chartData.series[0].data.push(mm.net_worth);
           });
+          this.chartData = chartData;
+          this.showLineA("canvasLineA", this.chartData);
         })
         .finally(() => {
           this.confirmStage += 1;
@@ -400,15 +355,6 @@ export default {
         typeof callback === "function" && callback();
       });
     }
-  },
-  onShareAppMessage() {
-    wx.showShareMenu({
-      withShareTicket: true
-    });
-    return {
-      title: "购物即免单！优质生活，这次我请！",
-      path: "/pages/online/index/main"
-    };
   }
 };
 </script>
@@ -469,7 +415,6 @@ export default {
   margin-left: -80upx;
 }
 .add {
-  margin-top: 10upx;
   width: 147upx;
   height: 59upx;
   line-height: 59upx;
@@ -496,25 +441,38 @@ export default {
 .item_font {
   color: #333;
 }
-.ratio {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 110upx;
-  background: #fff;
-  color: #999999;
-  font-size: 30upx;
-}
-.ratios {
-  color: #f74c3f;
-}
 /*样式的width和height一定要与定义的cWidth和cHeight相对应*/
+
+.qiun-columns {
+  display: flex;
+  flex-direction: column !important;
+}
+.qiun-common-mt {
+  margin-top: 10upx;
+}
+.qiun-bg-white {
+  background: #ffffff;
+}
+.qiun-title-bar {
+  width: 96%;
+  padding: 10upx 2%;
+  flex-wrap: nowrap;
+}
+.qiun-title-dot-light {
+  border-left: 10upx solid #9a1f27;
+  padding-left: 10upx;
+  font-size: 32upx;
+  color: #000000;
+}
+
 .qiun-charts {
-  width: 700upx;
+  width: 750upx;
   height: 500upx;
   background-color: #ffffff;
 }
+
 .charts {
-  width: 700upx;
+  width: 750upx;
   height: 500upx;
   background-color: #ffffff;
 }

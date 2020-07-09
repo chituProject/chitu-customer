@@ -3,7 +3,7 @@
     <van-notify id="van-notify" />
     <loading-animation :show-animation="showAnimation" />
     <div class="container">
-      <div class="background" />
+      <div class="background-white" />
       <div class="page_container">
         <div class="title">
           选择基金
@@ -76,7 +76,7 @@
                 </div>
                 <van-checkbox
                   v-for="item in fund_data"
-                  :key="name"
+                  :key="item"
                   style="padding:8upx;"
                   :name="item"
                   >{{ item }}</van-checkbox
@@ -148,7 +148,6 @@
   </container>
 </template>
 <script>
-import { mapGetters } from "vuex";
 import { navigateTo, getQuery, notify } from "@/utils/adapter";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
@@ -204,6 +203,8 @@ export default {
         url: "fund_archive/"
       })
         .then(([_, res]) => {
+          this.manager_funds = [];
+          this.index_funds = [];
           for (let i = 0; i < res.data.results.length; ++i) {
             if (res.data.results[i].type === "MANAGER") {
               this.manager_funds.push(res.data.results[i]);
