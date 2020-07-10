@@ -34,9 +34,7 @@
         </div>
       </div>
     </div>
-    <div
-      style="margin-top: 25upx;background: #FFFFFF;width: 100%;padding: 25upx"
-    >
+    <div style="margin-top: 25upx;background: #FFFFFF;width: 100%;">
       <!-- <div style="display: flex;">
             <div
               style="display:flex;height: 30upx;background: #fafafa;border-radius: 20upx;padding: 15upx"
@@ -58,9 +56,10 @@
             </div>
           </div> -->
 
-      <view v-show="chartData.series[0].data.length > 0" class="qiun-columns">
-        <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+      <view v-if="chartData.series[0].data.length > 0" class="qiun-columns">
+        <view class="flex qiun-bg-white qiun-title-bar qiun-common-mt">
           <view class="qiun-title-dot-light">净值</view>
+          <view @click="saveToAlbum('canvasLineA')">导出本图</view>
         </view>
         <view class="qiun-charts">
           <canvas

@@ -207,6 +207,43 @@ export function formatTimeMonth(tt) {
   return `${y}-${m}`;
 }
 
+export function saveToAlbum(canvasId) {
+  uni.showLoading({
+    title: "生成中..."
+  });
+  uni.vibrateShort();
+  uni.canvasToTempFilePath({
+    canvasId,
+    success(res) {
+      console.log(res);
+      uni.getSetting({
+        success(res1) {
+          if (!res1.authSetting["scope.writePhotosAlbum"]) {
+            uni.authorize({
+              scope: "scope.writePhotosAlbum",
+              success() {
+                _saveImageToAlbum(res.tempFilePath);
+              }
+            });
+          } else {
+            _saveImageToAlbum(res.tempFilePath);
+          }
+        }
+      });
+    }
+  });
+}
+function _saveImageToAlbum(filePath) {
+  uni
+    .saveImageToPhotosAlbum({
+      filePath
+    })
+    .then(() => {
+      uni.hideLoading();
+      uni.showToast({ title: "保存成功！" });
+    });
+}
+
 export default {
   formatDay,
   timeDeltaDay,
@@ -223,5 +260,6 @@ export default {
   getDisance,
   getMi,
   formatPercent,
-  formatTimeMonth
+  formatTimeMonth,
+  saveToAlbum
 };

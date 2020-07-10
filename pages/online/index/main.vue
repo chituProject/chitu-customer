@@ -152,9 +152,7 @@ export default {
   data() {
     return {
       strategyStatus,
-      triggered: false,
       showAnimation: true,
-      // addMp: false,
       notMoreText: "",
       height: "640rpx",
       finished: false,
@@ -287,8 +285,7 @@ export default {
       const params = {
         page_num: this.page_num,
         page_size: this.page_size,
-        ordering: "",
-        strategy: this.strategys[this.type3]
+        ordering: ""
       };
       if (this.list1.indexOf(this.type1) === 0) {
         if (this.list2.indexOf(this.type2) === 0) {
@@ -339,7 +336,11 @@ export default {
         }
         rows.forEach(item => {
           if (item.type === "MANAGER") {
-            this.list_manager.push(item);
+            if (
+              this.type3 === "全部策略" ||
+              item.strategy === this.strategys[this.type3]
+            )
+              this.list_manager.push(item);
           } else {
             this.list_index.push(item);
           }

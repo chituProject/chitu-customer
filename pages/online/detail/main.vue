@@ -93,8 +93,9 @@
       </div>
 
       <view class="qiun-columns">
-        <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+        <view class="flex qiun-bg-white qiun-title-bar qiun-common-mt">
           <view class="qiun-title-dot-light">净值</view>
+          <view @click="saveToAlbum('canvasLineA')">导出本图</view>
         </view>
         <view class="qiun-charts">
           <canvas
@@ -107,8 +108,9 @@
             @touchend="touchEndLineA"
           ></canvas>
         </view>
-        <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
+        <view class="flex qiun-bg-white qiun-title-bar qiun-common-mt">
           <view class="qiun-title-dot-light">回撤</view>
+          <view @click="saveToAlbum('canvaColumn')">导出本图</view>
         </view>
         <view class="qiun-charts">
           <canvas
@@ -127,7 +129,7 @@
         v-if="tableData.length > 0"
         :columns="tableColumns"
         :list="tableData"
-        :height="500"
+        :height="600"
       ></v-table>
     </div>
     <div v-show="activeIndex === 1" style="margin-top: 50upx;">
@@ -216,7 +218,7 @@
 
 <script>
 import navBar from "@/components/navBar.vue";
-import { formatPercent, formatTimeMonth } from "@/utils/index";
+import { formatPercent, formatTimeMonth, saveToAlbum } from "@/utils/index";
 import uCharts from "@/components/u-charts/u-charts.js";
 import vTable from "@/components/table.vue";
 
@@ -366,6 +368,7 @@ export default {
   },
   methods: {
     formatPercent,
+    saveToAlbum,
     getData(id) {
       this.$request({
         method: "GET",

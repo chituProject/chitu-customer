@@ -17,7 +17,7 @@
           open-type="getUserInfo"
           @getuserinfo="onGotUserInfo"
         >
-          微信登录
+          微信授权登录
         </button>
       </div>
     </div>
