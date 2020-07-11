@@ -191,12 +191,14 @@ export function checkSetting(thenFunc) {
   return uni
     .getSetting()
     .then(([err, res]) => {
-      console.log("checkSetting", res);
       // 如果未授权，需要用户手动点击授权
-      if (res && !res.authSetting["scope.userInfo"]) {
-        navigateTo({ url: "/pages/wxauth/main" });
+      if (!res.authSetting["scope.userInfo"]) {
+        store.commit("user/SET_SCOPE_USER", false);
+        // navigateTo({ url: "/pages/wxauth/main" });
         // 跳出promise链
         throw new Error("checkSetting: requires authentication!");
+      } else {
+        store.commit("user/SET_SCOPE_USER", true);
       }
     })
     .then(fetchWechatInfo)
@@ -244,7 +246,6 @@ function offpayRegister(userInfo, openid, qrScene) {
     throw new Error(err);
   });
 }
-
 
 /**
  * 用于单元测试！

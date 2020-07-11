@@ -2,7 +2,7 @@
 import { getSystemInfo } from "@/utils/adapter";
 import { cleanFormId } from "@/utils/offpay";
 import "./static/css/resetcss.css";
-import "./static/css/weui.css";
+// import "./static/css/weui.css";
 import "./static/css/mdj.css";
 
 export default {

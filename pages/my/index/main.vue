@@ -6,7 +6,7 @@
       <div class="background" />
       <div class="bg-blend">
         <div
-          v-if="hasLoggedIn"
+          v-if="scope.user"
           class="full-vw flex-justify_start"
           style="align-items:center"
         >
@@ -44,7 +44,7 @@
             open-type="getUserInfo"
             @getuserinfo="onGotUserInfo"
           >
-            点击获取用户信息
+            点击登录
           </button>
         </div>
       </div>
@@ -78,44 +78,43 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("app", ["systemInfo", "wechatInfo"]),
-    ...mapGetters("user", ["user", "userId", "userInfo"])
+    ...mapGetters("user", ["scope", "user", "userInfo"])
   },
-  watch: {
-    hasLoggedIn(val) {
-      if (val) {
-        fetchUserInfo();
-      }
-    }
-  },
+  // watch: {
+  //   hasLoggedIn(val) {
+  //     if (val) {
+  //       fetchUserInfo();
+  //     }
+  //   }
+  // },
   onShow() {
-    if (this.hasLoggedIn) {
+    if (this.user.scopeUser) {
       fetchUserInfo();
     }
   },
-  onShareAppMessage(res) {
-    const imageUrl = "/static/img/redPacket/card.png";
-    let path = "/pages/online/index/main?";
-    if (this.user.customer_id) {
-      path += `customer_id=${this.user.customer_id}&`;
-    }
-    if (res.from === "button" && res.target.id === "assist") {
-      path += "type=ASSIST";
-      return {
-        title: "我的免单金红包也分你一个。帮我助力就能拿钱喔。",
-        imageUrl,
-        path
-      };
-    }
-    wx.showShareMenu({
-      withShareTicket: true
-    });
-    return {
-      title: "购物即免单！优质生活，这次我请！",
-      imageUrl,
-      path
-    };
-  },
+  // onShareAppMessage(res) {
+  //   const imageUrl = "/static/img/redPacket/card.png";
+  //   let path = "/pages/online/index/main?";
+  //   if (this.user.customer_id) {
+  //     path += `customer_id=${this.user.customer_id}&`;
+  //   }
+  //   if (res.from === "button" && res.target.id === "assist") {
+  //     path += "type=ASSIST";
+  //     return {
+  //       title: "我的免单金红包也分你一个。帮我助力就能拿钱喔。",
+  //       imageUrl,
+  //       path
+  //     };
+  //   }
+  //   wx.showShareMenu({
+  //     withShareTicket: true
+  //   });
+  //   return {
+  //     title: "购物即免单！优质生活，这次我请！",
+  //     imageUrl,
+  //     path
+  //   };
+  // },
   methods: {
     introduction() {
       this.nav("/pages/mycenter/offpay/introduction/main");
