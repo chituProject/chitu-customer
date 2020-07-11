@@ -112,7 +112,6 @@
           </view>
         </view>
 
-        <!-- <funcBar></funcBar> -->
         <!--        <div v-for="(item,i) in list" :key="i" >-->
         <!--          {{item}}-->
         <!--        </div>-->
@@ -138,7 +137,6 @@ import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import OffpaySelect from "@/components/apply/select";
 import sibList from "@/components/sib-list/sib-list.vue";
-// import funcBar from "@/components/funcBar";
 import strategyStatus from "@/static/data/status.json";
 
 export default {
@@ -146,7 +144,6 @@ export default {
     loadingAnimation,
     OffpaySelect,
     sibList
-    // funcBar
   },
   mixins: [authMixin],
   data() {
@@ -326,11 +323,7 @@ export default {
         const rows = res.data.results;
         this.loading = false;
         this.next = res.data.next;
-        if (this.next === null) {
-          this.finished = true;
-          this.notMoreText = "我是有底线的...";
-        }
-        if (rows == null || rows.length === 0) {
+        if (this.next === null || rows == null || rows.length === 0) {
           this.finished = true;
           this.notMoreText = "我是有底线的...";
         }

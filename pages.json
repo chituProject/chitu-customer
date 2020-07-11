@@ -72,28 +72,28 @@
   },
   "tabBar": {
     "color": "#666666",
-    "selectedColor": "#a5323a",
+    "selectedColor": "#9a1f27",
     "list": [
       {
         "pagePath": "pages/online/index/main",
-        "iconPath": "static/img/icons/tabBar/home.png",
-        "selectedIconPath": "static/img/icons/tabBar/home-selected.png",
+        "iconPath": "static/img/icons/tabBar/discovery.png",
+        "selectedIconPath": "static/img/icons/tabBar/discovery-main.png",
         "text": "发现"
       },{
         "pagePath": "pages/analysis/across",
-        "iconPath": "static/img/icons/tabBar/recommend.png",
-        "selectedIconPath": "static/img/icons/tabBar/recommend-selected.png",
+        "iconPath": "static/img/icons/tabBar/across.png",
+        "selectedIconPath": "static/img/icons/tabBar/across-main.png",
         "text": "横向比较"
       },{
         "pagePath": "pages/analysis/simulate",
-        "iconPath": "static/img/icons/tabBar/category.png",
-        "selectedIconPath": "static/img/icons/tabBar/category-selected.png",
+        "iconPath": "static/img/icons/tabBar/simulation.png",
+        "selectedIconPath": "static/img/icons/tabBar/simulation-main.png",
         "text": "模拟组合"
       },
       {
         "pagePath": "pages/my/index/main",
         "iconPath": "static/img/icons/tabBar/me.png",
-        "selectedIconPath": "static/img/icons/tabBar/me-selected.png",
+        "selectedIconPath": "static/img/icons/tabBar/me-main.png",
         "text": "我的"
       }
     ]
