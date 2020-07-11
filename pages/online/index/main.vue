@@ -55,7 +55,7 @@
             <!-- 内部block可自定义 -->
             <block slot="sibScrollList" class="">
               <view class="table">
-                <view class="tr" style="position: fixed">
+                <view class="tr" style="position: absolute">
                   <view class="th">基金经理</view>
                   <view class="th th1">基金名</view>
                   <view class="th th1">YTD</view>
@@ -89,7 +89,7 @@
         </view>
         <view>
           <view class="table">
-            <view class="tr">
+            <view class="tr" style="position: absolute">
               <view class="th">/</view>
               <view class="th th1">基金名</view>
               <view class="th th1">YTD</view>

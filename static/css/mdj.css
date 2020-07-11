@@ -434,3 +434,9 @@ button{
 .th1 {
   line-height: 85upx;
 }
+.van-tabs__scroll--card {
+  border: 1px solid #a5323a !important;
+}
+.van-tabs__nav--card {
+  border: none !important;
+}
