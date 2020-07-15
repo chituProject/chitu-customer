@@ -14,7 +14,8 @@ const state = {
   user: {},
   scope: {
     user: true
-  }
+  },
+  collectId: -1
 };
 
 const mutations = {
@@ -32,6 +33,10 @@ const mutations = {
   SET_SCOPE_USER: (state, status) => {
     state.scope.user = status;
     console.log("user authorize status updated: ", state.scope.user);
+  },
+  SET_COLLECTID: (state, status) => {
+    state.collectId = status;
+    console.log("user collectId updated: ", state.collectId);
   }
 };
 
@@ -45,7 +50,7 @@ const getters = {
   userId: state => {
     return state.user && state.user.uuid;
   },
-  scope: scope => {
+  scope: state => {
     return state.scope;
   },
   authorizeType: state => {
@@ -54,6 +59,9 @@ const getters = {
   },
   phone: (state, getters) => {
     return getters.userInfo.wechat_phone_number;
+  },
+  collectId: state => {
+    return state.collectId;
   }
 };
 

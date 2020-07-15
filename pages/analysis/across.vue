@@ -124,7 +124,8 @@
   </div>
 </template>
 <script>
-import { navigateTo, getQuery, notify } from "@/utils/adapter";
+import { mapGetters } from "vuex";
+import { navigateTo, notify } from "@/utils/adapter";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
 import vTable from "@/components/table";
@@ -164,13 +165,13 @@ export default {
           key: "id"
         }
       ],
-      checkedFavorite: false,
-      collectId: -1
+      checkedFavorite: false
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters("user", ["collectId"])
+  },
   onShow() {
-    this.query = getQuery(this);
     this.getData(this.hideAnimation);
   },
   methods: {
@@ -205,6 +206,14 @@ export default {
             }
           }
           this.fundList = res.data.results;
+          if (this.collectId > -1) {
+            this.$request({
+              method: "GET",
+              url: `customer_collect/${this.collectId}`
+            }).then(([_, res2]) => {
+              this.checkedFavorite = true;
+            });
+          }
         })
         .finally(() => {
           typeof callback === "function" && callback();
@@ -273,45 +282,52 @@ export default {
           this.idsStr
         }&fund_data=${fundarchiveStr}&fund_achievement=${fundachievementsStr}`
       }).then(([_, res]) => {
-        this.fundArchiveTable = [];
-        this.fundAchievementTable = [];
-        res.data.result.map(data => {
-          const tableAchievementRow = {
-            id: data.fund_name
-          };
-          this.fundAchievementHeader.map(header => {
-            let a = data.fund_achievement[header.title];
-            if (
-              header.title === "月收益率" ||
-              header.title === "回撤" ||
-              header.title === "成立以来收益" ||
-              header.title === "最近一年收益" ||
-              header.title === "最近二年收益" ||
-              header.title === "最近三年收益" ||
-              header.title === "最近五年收益" ||
-              header.title === "最近一年年化" ||
-              header.title === "最近二年年化" ||
-              header.title === "最近三年年化" ||
-              header.title === "最近五年年化"
-            ) {
-              a = `${(parseFloat(a) * 100).toFixed(2)}%`;
-            }
-            if (a) {
-              tableAchievementRow[header.title] = a;
-            }
-          });
-          this.fundAchievementTable.push(tableAchievementRow);
-
-          const tableArchiveRow = {
-            id: data.fund_name
-          };
-          this.fundArchiveHeader.map(header => {
-            tableArchiveRow[header.title] = data.fund_data[header.title]
-              ? data.fund_data[header.title]
-              : "无";
-          });
-          this.fundArchiveTable.push(tableArchiveRow);
+        this.updateArchiveTable(res.data.result);
+        this.updateAchievementTable(res.data.result);
+      });
+    },
+    updateArchiveTable(dataArray) {
+      this.fundArchiveTable = [];
+      dataArray.map(data => {
+        const tableArchiveRow = {
+          id: data.fund_name
+        };
+        this.fundArchiveHeader.map(header => {
+          tableArchiveRow[header.title] = data.fund_data[header.title]
+            ? data.fund_data[header.title]
+            : "无";
         });
+        this.fundArchiveTable.push(tableArchiveRow);
+      });
+    },
+    updateAchievementTable(dataArray) {
+      this.fundAchievementTable = [];
+      dataArray.map(data => {
+        const tableAchievementRow = {
+          id: data.fund_name
+        };
+        this.fundAchievementHeader.map(header => {
+          let a = data.fund_achievement[header.title];
+          if (
+            header.title === "月收益率" ||
+            header.title === "回撤" ||
+            header.title === "成立以来收益" ||
+            header.title === "最近一年收益" ||
+            header.title === "最近二年收益" ||
+            header.title === "最近三年收益" ||
+            header.title === "最近五年收益" ||
+            header.title === "最近一年年化" ||
+            header.title === "最近二年年化" ||
+            header.title === "最近三年年化" ||
+            header.title === "最近五年年化"
+          ) {
+            a = `${(parseFloat(a) * 100).toFixed(2)}%`;
+          }
+          if (a) {
+            tableAchievementRow[header.title] = a;
+          }
+        });
+        this.fundAchievementTable.push(tableAchievementRow);
       });
     },
     onChangeFavorite() {
@@ -329,7 +345,7 @@ export default {
           url: "customer_collect/",
           data
         }).then(([_, res]) => {
-          this.collectId = res.data.id;
+          this.$store.commit("user/SET_COLLECTID", res.data.id);
           this.checkedFavorite = true;
         });
       } else {

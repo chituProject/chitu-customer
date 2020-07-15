@@ -25,21 +25,23 @@
               <view class="th">组合名</view>
               <view class="th th1">YTD</view>
               <view class="th">最近三年</view>
-              <view class="th th1">策略</view>
+              <view class="th">滚动一年胜率</view>
+              <view class="th">夏普比率</view>
             </view>
             <view
-              v-for="(item, index) in list_HC"
+              v-for="(item, index) in list_SM"
               :key="item.id"
               class="tr"
               :class="{ tr1: index == 0 }"
-              @click="switchTab(`/pages/analysis/simulate?id=${item.id}`)"
+              @click="switchTab('/pages/analysis/simulate', item.id)"
             >
               <view class="td">{{ item.name }}</view>
               <view class="td">{{ formatPercent(item.ytd) }}</view>
               <view class="td">{{
                 formatPercent(item.three_year_profit)
               }}</view>
-              <view class="td">{{ strategyStatus[item.strategy] }}</view>
+              <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
+              <view class="td">{{ item.sharpe_ratio }}</view>
             </view>
           </view>
         </block>
@@ -51,8 +53,7 @@
         :title="`横向比较${item.id}`"
         size="large"
         is-link
-        link-type="switchTab"
-        :url="`/pages/analysis/across?id=${item.id}`"
+        @click="switchTab('/pages/analysis/across', item.id)"
       />
     </van-cell-group>
     <!--        <div v-for="(item,i) in list" :key="i" >-->
@@ -75,7 +76,6 @@ import { mapGetters } from "vuex";
 import { formatPercent } from "@/utils/index";
 import loadingAnimation from "@/components/loadingAnimation";
 import sibList from "@/components/sib-list/sib-list.vue";
-import strategyStatus from "@/static/data/status.json";
 
 export default {
   components: {
@@ -84,7 +84,6 @@ export default {
   },
   data() {
     return {
-      strategyStatus,
       showAnimation: true,
       notMoreText: "",
       height: "640rpx",
@@ -112,17 +111,7 @@ export default {
         "多空",
         "复合",
         "其他"
-      ],
-      strategys: {
-        全部策略: "",
-        量化: "quantification",
-        固收: "fixed__income",
-        宏观对冲: "macro__hedging",
-        纯多头: "pure__bull",
-        多空: "long__short",
-        复合: "combination",
-        其他: "other"
-      }
+      ]
     };
   },
   computed: {
@@ -189,7 +178,8 @@ export default {
         this.fetchHomepage();
       }
     },
-    switchTab(url) {
+    switchTab(url, id) {
+      this.$store.commit("user/SET_COLLECTID", id);
       uni.switchTab({ url });
     },
     hideAnimation() {
@@ -255,15 +245,6 @@ export default {
         typeof callback === "function" && callback();
       });
     }
-  },
-  onShareAppMessage() {
-    wx.showShareMenu({
-      withShareTicket: true
-    });
-    return {
-      title: "赤兔小程序",
-      path: "/pages/online/index/main"
-    };
   }
 };
 </script>

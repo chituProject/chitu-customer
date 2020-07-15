@@ -116,7 +116,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { navigateTo, getQuery, notify } from "@/utils/adapter";
+import { navigateTo, notify } from "@/utils/adapter";
 import { formatPercent, formatTimeMonth } from "@/utils/index";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
@@ -189,14 +189,9 @@ export default {
     this.initChart();
   },
   computed: {
-    ...mapGetters("app", ["hasLoggedIn"])
+    ...mapGetters("user", ["collectedId"])
   },
   watch: {
-    hasLoggedIn(val) {
-      if (val) {
-        this.getData(this.hideAnimation);
-      }
-    },
     selectedFunds: {
       handler() {
         let sum = 0;
@@ -212,10 +207,8 @@ export default {
     }
   },
   onShow() {
-    this.query = getQuery(this);
-    if (this.hasLoggedIn) {
-      this.getData(this.hideAnimation);
-    }
+    this.collectId = this.collectedId;
+    this.getData(this.hideAnimation);
   },
   methods: {
     initChart() {
