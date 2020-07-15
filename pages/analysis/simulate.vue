@@ -30,6 +30,9 @@
           :value="checkedFavorite"
           @input="onChangeFavorite"
         />
+        <van-button size="small" color="#9a1f27" @click="simulationClear"
+          >清空当前选择</van-button
+        >
       </div>
       <div
         v-for="(item, index) in selectedFunds"
@@ -116,7 +119,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { navigateTo, notify } from "@/utils/adapter";
+import { notify } from "@/utils/adapter";
 import { formatPercent, formatTimeMonth } from "@/utils/index";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
@@ -178,8 +181,7 @@ export default {
           $width: "60px"
         }
       ],
-      checkedFavorite: false,
-      collectId: -1
+      checkedFavorite: false
     };
   },
   onLoad() {
@@ -189,7 +191,7 @@ export default {
     this.initChart();
   },
   computed: {
-    ...mapGetters("user", ["collectedId"])
+    ...mapGetters("user", ["collectId"])
   },
   watch: {
     selectedFunds: {
@@ -207,7 +209,6 @@ export default {
     }
   },
   onShow() {
-    this.collectId = this.collectedId;
     this.getData(this.hideAnimation);
   },
   methods: {
@@ -268,6 +269,12 @@ export default {
           return `${category} ${item.name}:${item.data}`;
         }
       });
+    },
+    simulationClear() {
+      this.selectedFunds = [];
+      this.chartData = [];
+      this.tableData = [];
+      this.$store.commit("user/SET_COLLECTID", -1);
     },
     onInput1(val) {
       this.popup2 = false;
@@ -332,33 +339,7 @@ export default {
       })
         .then(([_, res]) => {
           this.simulationData = data;
-          const chartData = {
-            categories: [],
-            series: [
-              {
-                name: "模拟组合",
-                data: [],
-                color: "#9a1f27"
-              }
-            ]
-          };
-          res.data.results.map(mm => {
-            const tableRow = {
-              id: formatTimeMonth(mm.time),
-              net_worth: mm.net_worth,
-              monthly_yield: formatPercent(mm.monthly_yield),
-              fallback: formatPercent(mm.fallback)
-            };
-            this.tableData.push(tableRow);
-            if (mm.time.substr(5, 2) === "01") {
-              chartData.categories.push(formatTimeMonth(mm.time));
-            } else {
-              chartData.categories.push("");
-            }
-            chartData.series[0].data.push(mm.net_worth);
-          });
-          this.chartData = chartData;
-          this.showLineA("canvasLineA", this.chartData);
+          this.setChartTable(res.data.results);
         })
         .finally(() => {
           this.confirmStage += 1;
@@ -368,9 +349,6 @@ export default {
     change1(item, index) {
       this.type1 = item;
       this.selectedFund = this.list[index];
-    },
-    nav(url) {
-      navigateTo({ url });
     },
     hideAnimation() {
       this.showAnimation = false;
@@ -384,8 +362,50 @@ export default {
         res.data.results.forEach(item => {
           this.list1.push(item.name);
         });
-        typeof callback === "function" && callback();
+        if (this.collectId > -1) {
+          this.$request({
+            method: "GET",
+            url: `customer_collect/${this.collectId}`
+          }).then(([_, res2]) => {
+            this.confirmStage = 1;
+            this.checkedFavorite = true;
+            this.setChartTable(res2.data.fund_simulation.data);
+            typeof callback === "function" && callback();
+          });
+        } else {
+          typeof callback === "function" && callback();
+        }
       });
+    },
+    setChartTable(list) {
+      this.tableData = [];
+      const chartData = {
+        categories: [],
+        series: [
+          {
+            name: "模拟组合",
+            data: [],
+            color: "#9a1f27"
+          }
+        ]
+      };
+      list.map(mm => {
+        const tableRow = {
+          id: formatTimeMonth(mm.time),
+          net_worth: mm.net_worth,
+          monthly_yield: formatPercent(mm.monthly_yield),
+          fallback: formatPercent(mm.fallback)
+        };
+        this.tableData.push(tableRow);
+        if (mm.time.substr(5, 2) === "01") {
+          chartData.categories.push(formatTimeMonth(mm.time));
+        } else {
+          chartData.categories.push("");
+        }
+        chartData.series[0].data.push(mm.net_worth);
+      });
+      this.chartData = chartData;
+      this.showLineA("canvasLineA", this.chartData);
     },
     onChangeFavorite() {
       if (!this.checkedFavorite) {
@@ -398,14 +418,14 @@ export default {
           url: "customer_collect/",
           data
         }).then(([_, res]) => {
-          this.collectId = res.data.id;
+          this.$store.commit("user/SET_COLLECTID", res.data.id);
           this.checkedFavorite = true;
         });
       } else {
         this.$request({
           method: "DELETE",
           url: `customer_collect/${this.collectId}/`
-        }).then(([_, __]) => {
+        }).then(() => {
           this.checkedFavorite = false;
         });
       }

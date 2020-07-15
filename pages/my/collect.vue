@@ -35,7 +35,7 @@
               :class="{ tr1: index == 0 }"
               @click="switchTab('/pages/analysis/simulate', item.id)"
             >
-              <view class="td">{{ item.name }}</view>
+              <view class="td">{{ item.id }}</view>
               <view class="td">{{ formatPercent(item.ytd) }}</view>
               <view class="td">{{
                 formatPercent(item.three_year_profit)
