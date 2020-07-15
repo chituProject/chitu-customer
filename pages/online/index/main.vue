@@ -1,130 +1,124 @@
 <template>
-  <container>
+  <div>
     <loading-animation :show-animation="showAnimation" />
     <div class="container">
       <div class="background" />
-      <div class="page_container">
-        <div class="title">赤兔精选</div>
-        <div class="contain">
-          <offpay-select
-            class="input-text"
-            :value="type1"
-            :list="list1"
-            value-key="value"
-            label-key="label"
-            placeholder="按YTD排序"
-            @change="change1"
-          >
-          </offpay-select>
-          <offpay-select
-            class="input-text"
-            :value="type2"
-            :list="list2"
-            value-key="value"
-            label-key="label"
-            placeholder=""
-            @change="change2"
-          >
-          </offpay-select>
-          <offpay-select
-            class="input-text"
-            :value="type3"
-            :list="list3"
-            value-key="value"
-            label-key="label"
-            placeholder=""
-            @change="change3"
-          >
-          </offpay-select>
-        </div>
-        <view
-          class="list"
-          @touchstart="touchstart"
-          @touchmove="touchmove"
-          @touchend="touchend"
+      <div class="title">赤兔精选</div>
+      <div class="contain">
+        <offpay-select
+          class="input-text"
+          :value="type1"
+          :list="list1"
+          value-key="value"
+          label-key="label"
+          placeholder="按YTD排序"
+          @change="change1"
         >
-          <!-- ref="sibList" @isRefresh='isRefresh' @scrolltolowerFn="scrolltolowerFn" 此三个必须写 -->
-          <sib-list
-            ref="sibList"
-            :is-not-more="finished"
-            :floter-text="notMoreText"
-            :scroll-height="height"
-            @isRefresh="isRefresh"
-            @scrolltolowerFn="scrolltolowerFn"
-          >
-            <!-- 内部block可自定义 -->
-            <block slot="sibScrollList" class="">
-              <view class="table">
-                <view class="tr" style="position: absolute">
-                  <view class="th">基金经理</view>
-                  <view class="th th1">基金名</view>
-                  <view class="th th1">YTD</view>
-                  <view class="th">最近三年</view>
-                  <view class="th">滚动一年胜率</view>
-                  <view class="th">夏普比率</view>
-                  <view class="th th1">策略</view>
-                </view>
-                <view
-                  v-for="(item, index) in list_manager"
-                  :key="item.id"
-                  class="tr"
-                  :class="{ tr1: index == 0 }"
-                  @click="nav(`/pages/online/detail/main?id=${item.id}`)"
-                >
-                  <view class="td">{{ item.manager }}</view>
-                  <view class="td">{{ item.name }}</view>
-                  <view class="td">{{ formatPercent(item.ytd) }}</view>
-                  <view class="td">{{
-                    formatPercent(item.three_year_profit)
-                  }}</view>
-                  <view class="td">{{
-                    formatPercent(item.roll_year_win)
-                  }}</view>
-                  <view class="td">{{ item.sharpe_ratio }}</view>
-                  <view class="td">{{ strategyStatus[item.strategy] }}</view>
-                </view>
+        </offpay-select>
+        <offpay-select
+          class="input-text"
+          :value="type2"
+          :list="list2"
+          value-key="value"
+          label-key="label"
+          placeholder=""
+          @change="change2"
+        >
+        </offpay-select>
+        <offpay-select
+          class="input-text"
+          :value="type3"
+          :list="list3"
+          value-key="value"
+          label-key="label"
+          placeholder=""
+          @change="change3"
+        >
+        </offpay-select>
+      </div>
+      <view
+        class="list"
+        @touchstart="touchstart"
+        @touchmove="touchmove"
+        @touchend="touchend"
+      >
+        <!-- ref="sibList" @isRefresh='isRefresh' @scrolltolowerFn="scrolltolowerFn" 此三个必须写 -->
+        <sib-list
+          ref="sibList"
+          :is-not-more="finished"
+          :floter-text="notMoreText"
+          :scroll-height="height"
+          @isRefresh="isRefresh"
+          @scrolltolowerFn="scrolltolowerFn"
+        >
+          <!-- 内部block可自定义 -->
+          <block slot="sibScrollList" class="">
+            <view class="table">
+              <view class="tr" style="position: absolute">
+                <view class="th">基金经理</view>
+                <view class="th th1">基金名</view>
+                <view class="th th1">YTD</view>
+                <view class="th">最近三年</view>
+                <view class="th">滚动一年胜率</view>
+                <view class="th">夏普比率</view>
+                <view class="th th1">策略</view>
               </view>
-            </block>
-          </sib-list>
-        </view>
-        <view>
-          <view class="table">
-            <view class="tr" style="position: absolute">
-              <view class="th">/</view>
-              <view class="th th1">基金名</view>
-              <view class="th th1">YTD</view>
-              <view class="th">最近三年</view>
-              <view class="th">滚动一年胜率</view>
-              <view class="th">夏普比率</view>
-              <view class="th th1">/</view>
+              <view
+                v-for="(item, index) in list_manager"
+                :key="item.id"
+                class="tr"
+                :class="{ tr1: index == 0 }"
+                @click="nav(`/pages/online/detail/main?id=${item.id}`)"
+              >
+                <view class="td">{{ item.manager }}</view>
+                <view class="td">{{ item.name }}</view>
+                <view class="td">{{ formatPercent(item.ytd) }}</view>
+                <view class="td">{{
+                  formatPercent(item.three_year_profit)
+                }}</view>
+                <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
+                <view class="td">{{ item.sharpe_ratio }}</view>
+                <view class="td">{{ strategyStatus[item.strategy] }}</view>
+              </view>
             </view>
-            <view v-for="item in list_index" :key="item.id" class="tr">
-              <view class="td">/</view>
-              <view class="td">{{ item.name }}</view>
-              <view class="td">{{ formatPercent(item.ytd) }}</view>
-              <view class="td">{{
-                formatPercent(item.three_year_profit)
-              }}</view>
-              <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
-              <view class="td">{{ item.sharpe_ratio }}</view>
-              <view class="td">\</view>
-            </view>
+          </block>
+        </sib-list>
+      </view>
+      <view>
+        <view class="table">
+          <view class="tr" style="position: absolute">
+            <view class="th">/</view>
+            <view class="th th1">基金名</view>
+            <view class="th th1">YTD</view>
+            <view class="th">最近三年</view>
+            <view class="th">滚动一年胜率</view>
+            <view class="th">夏普比率</view>
+            <view class="th th1">/</view>
+          </view>
+          <view v-for="item in list_index" :key="item.id" class="tr">
+            <view class="td">/</view>
+            <view class="td">{{ item.name }}</view>
+            <view class="td">{{ formatPercent(item.ytd) }}</view>
+            <view class="td">{{ formatPercent(item.three_year_profit) }}</view>
+            <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
+            <view class="td">{{ item.sharpe_ratio }}</view>
+            <view class="td">\</view>
           </view>
         </view>
+      </view>
 
-        <!--        <div v-for="(item,i) in list" :key="i" >-->
-        <!--          {{item}}-->
-        <!--        </div>-->
-        <!--        <div-->
-        <!--          v-if="finished"-->
-        <!--          style="text-align:center;"-->
-        <!--          :class="{ empty: finished }"-->
-        <!--        >-->
-        <!--          <p class="explain">没有更多了</p>-->
-        <!--        </div>-->
-      </div>
+      <!--        <div v-for="(item,i) in list" :key="i" >-->
+      <!--          {{item}}-->
+      <!--        </div>-->
+      <!--        <div-->
+      <!--          v-if="finished"-->
+      <!--          style="text-align:center;"-->
+      <!--          :class="{ empty: finished }"-->
+      <!--        >-->
+      <!--          <p class="explain">没有更多了</p>-->
+      <!--        </div>-->
     </div>
-  </container>
+  </div>
 </template>
 
 <script>
@@ -190,14 +184,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("app", [
-      "options",
-      "systemInfo",
-      "wechatInfo",
-      "hasLoggedIn",
-      "isIpx"
-    ]),
-    ...mapGetters("user", ["user", "userInfo"])
+    ...mapGetters("app", ["hasLoggedIn", "isIpx"])
   },
   watch: {
     hasLoggedIn(val) {
@@ -362,12 +349,11 @@ export default {
   align-items: flex-start;
 }
 .title {
-  font-size: 32upx;
-  color: #393939;
+  font-size: 36upx;
+  font-weight: bold;
+  text-align: left;
+  margin: 20upx 0 40upx;
   padding: 0 30upx;
-  margin-bottom: 10upx;
-  /*position: fixed;*/
-  /*top: 30upx;*/
 }
 .contain {
   display: flex;
@@ -384,8 +370,5 @@ export default {
   margin-bottom: 10upx;
   /*background-color: #fff;*/
   /*border: solid 1px #fafafa;*/
-}
-.empty {
-  margin-top: 1vh;
 }
 </style>

@@ -21,15 +21,25 @@
         >
       </div>
       <div
+        v-show="confirmStage > 0"
+        class="favorite btn-main-reverse btn-radius background-white"
+      >
+        <div class="fs-18 main-color">收藏此比较</div>
+        <van-switch
+          active-color="#9a1f27"
+          :value="checkedFavorite"
+          @input="onChangeFavorite"
+        />
+      </div>
+      <div
         v-for="(item, index) in selectedFunds"
         :key="index"
         style="padding: 0 30upx"
       >
         <div class="item">
-          <div class="item_font">{{ item.name }}</div>
-          <div class="item_font">{{ item.investment + "万" }}</div>
-          <div class="item_font">{{ item.propotion }}</div>
-          <!--            <div class="item_font" style="font-size: 30upx">x</div>-->
+          <div class="grey39-color">{{ item.name }}</div>
+          <div class="grey39-color">{{ item.investment + "万" }}</div>
+          <div class="grey39-color">{{ item.propotion }}</div>
           <van-icon name="cross" @click="del(index)" />
         </div>
       </div>
@@ -81,7 +91,7 @@
         :height="500"
       ></v-table>
 
-      <van-popup :show="popup" position="bottom">
+      <!-- <van-popup :show="popup" position="bottom">
         <van-datetime-picker
           type="year-month"
           :value="currentDate"
@@ -100,13 +110,11 @@
           @confirm="onInput1"
           @cancel="popup2 = false"
         />
-      </van-popup>
+      </van-popup> -->
     </div>
   </div>
 </template>
 <script>
-/* eslint-disable no-underscore-dangle */
-
 import { mapGetters } from "vuex";
 import { navigateTo, getQuery, notify } from "@/utils/adapter";
 import { formatPercent, formatTimeMonth } from "@/utils/index";
@@ -128,12 +136,13 @@ export default {
   mixins: [authMixin],
   data() {
     return {
+      confirmStage: 0,
       cWidth: "",
       cHeight: "",
       data: "",
       data1: "",
-      popup: false,
-      popup2: false,
+      // popup: false,
+      // popup2: false,
       currentDate: new Date(),
       showAnimation: true,
       list: [],
@@ -143,6 +152,7 @@ export default {
       selectedFunds: [],
       investment: 0,
       total: 0,
+      simulationData: [],
       chartData: {},
       pixelRatio: 1,
       tableData: [],
@@ -167,7 +177,9 @@ export default {
           key: "fallback",
           $width: "60px"
         }
-      ]
+      ],
+      checkedFavorite: false,
+      collectId: -1
     };
   },
   onLoad() {
@@ -177,8 +189,7 @@ export default {
     this.initChart();
   },
   computed: {
-    ...mapGetters("app", ["hasLoggedIn", "isIpx"]),
-    ...mapGetters("user", ["user", "userInfo"])
+    ...mapGetters("app", ["hasLoggedIn"])
   },
   watch: {
     hasLoggedIn(val) {
@@ -283,7 +294,6 @@ export default {
       if (type === "month") {
         return `${val}月`;
       }
-      console.log(val);
       return val;
     },
     del(index) {
@@ -313,7 +323,7 @@ export default {
     },
     simulationConfirm() {
       if (this.selectedFunds.length < 2) return;
-      this.loading = true;
+      this.showAnimation = true;
       const data = [];
       this.selectedFunds.map(item => {
         const tmp = {
@@ -328,6 +338,7 @@ export default {
         data
       })
         .then(([_, res]) => {
+          this.simulationData = data;
           const chartData = {
             categories: [],
             series: [
@@ -358,7 +369,7 @@ export default {
         })
         .finally(() => {
           this.confirmStage += 1;
-          this.loading = false;
+          this.showAnimation = false;
         });
     },
     change1(item, index) {
@@ -376,13 +387,35 @@ export default {
         method: "GET",
         url: "fund_archive/"
       }).then(([_, res]) => {
-        // eslint-disable-next-line no-unused-expressions
         this.list = res.data.results;
         res.data.results.forEach(item => {
           this.list1.push(item.name);
         });
         typeof callback === "function" && callback();
       });
+    },
+    onChangeFavorite() {
+      if (!this.checkedFavorite) {
+        const data = {
+          type: "SM",
+          data: this.simulationData
+        };
+        this.$request({
+          method: "POST",
+          url: "customer_collect/",
+          data
+        }).then(([_, res]) => {
+          this.collectId = res.data.id;
+          this.checkedFavorite = true;
+        });
+      } else {
+        this.$request({
+          method: "DELETE",
+          url: `customer_collect/${this.collectId}/`
+        }).then(([_, __]) => {
+          this.checkedFavorite = false;
+        });
+      }
     }
   }
 };
@@ -391,9 +424,6 @@ export default {
 <style scoped lang="scss">
 .container {
   align-items: flex-start;
-}
-.page_container {
-  /*padding: 30upx;*/
 }
 .fixed {
   width: 100%;
@@ -423,9 +453,6 @@ export default {
   margin-bottom: 10upx;
   /*background-color: #fff;*/
   /*border: solid 1px #fafafa;*/
-}
-.empty {
-  margin-top: 1vh;
 }
 .input {
   width: 90upx;
@@ -467,9 +494,6 @@ export default {
   font-size: 28upx;
   justify-content: space-between;
 }
-.item_font {
-  color: #333;
-}
 /*样式的width和height一定要与定义的cWidth和cHeight相对应*/
 
 .qiun-columns {
@@ -504,5 +528,12 @@ export default {
   width: 750upx;
   height: 500upx;
   background-color: #ffffff;
+}
+
+.favorite {
+  z-index: 10000;
+  position: fixed;
+  top: 24upx;
+  right: 24upx;
 }
 </style>

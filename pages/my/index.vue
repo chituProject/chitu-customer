@@ -49,7 +49,14 @@
         </div>
       </div>
       <van-cell-group style="width: 100%;margin-top:12px;">
-        <van-cell title="我的收藏" icon="like-o" size="large" />
+        <van-cell
+          title="我的收藏"
+          icon="like-o"
+          size="large"
+          is-link
+          link-type="navigateTo"
+          url="/pages/my/collect"
+        />
       </van-cell-group>
       <van-cell-group style="width: 100%;margin-top:12px;">
         <van-cell title="关于赤兔" icon="info-o" size="large" />
@@ -80,13 +87,6 @@ export default {
   computed: {
     ...mapGetters("user", ["scope", "user", "userInfo"])
   },
-  // watch: {
-  //   hasLoggedIn(val) {
-  //     if (val) {
-  //       fetchUserInfo();
-  //     }
-  //   }
-  // },
   onShow() {
     if (this.user.scopeUser) {
       fetchUserInfo();

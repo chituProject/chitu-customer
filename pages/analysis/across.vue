@@ -13,6 +13,17 @@
         >确认基金选择</van-button
       >
     </div>
+    <div
+      v-show="confirmStage > 1"
+      class="favorite btn-main-reverse btn-radius background-white"
+    >
+      <div class="fs-18 main-color">收藏此比较</div>
+      <van-switch
+        active-color="#9a1f27"
+        :value="checkedFavorite"
+        @input="onChangeFavorite"
+      />
+    </div>
     <van-checkbox-group
       :value="checkedFunds"
       @change="handleCheckedFundsChange"
@@ -116,7 +127,7 @@
 import { navigateTo, getQuery, notify } from "@/utils/adapter";
 import { authMixin } from "@/utils/mixins";
 import loadingAnimation from "@/components/loadingAnimation";
-import vTable from "@/components/table.vue";
+import vTable from "@/components/table";
 
 export default {
   components: {
@@ -136,6 +147,8 @@ export default {
       fund_achievement: [],
       fund_data: [],
       idsStr: "",
+      fundachievementsStr: "",
+      fundarchiveStr: "",
       metricsStr: "",
       fundAchievementTable: [],
       fundAchievementHeader: [
@@ -150,7 +163,9 @@ export default {
           title: "基金名称",
           key: "id"
         }
-      ]
+      ],
+      checkedFavorite: false,
+      collectId: -1
     };
   },
   computed: {},
@@ -250,6 +265,8 @@ export default {
           f2 += 1;
         }
       });
+      this.fundarchiveStr = fundarchiveStr;
+      this.fundachievementsStr = fundachievementsStr;
       this.$request({
         method: "GET",
         url: `fund_archive/get_fund_data/?id=${
@@ -296,6 +313,33 @@ export default {
           this.fundArchiveTable.push(tableArchiveRow);
         });
       });
+    },
+    onChangeFavorite() {
+      if (!this.checkedFavorite) {
+        const data = {
+          type: "HC",
+          data: {
+            id: this.idsStr,
+            fund_data: this.fundarchiveStr,
+            fund_achievement: this.fundachievementsStr
+          }
+        };
+        this.$request({
+          method: "POST",
+          url: "customer_collect/",
+          data
+        }).then(([_, res]) => {
+          this.collectId = res.data.id;
+          this.checkedFavorite = true;
+        });
+      } else {
+        this.$request({
+          method: "DELETE",
+          url: `customer_collect/${this.collectId}/`
+        }).then(([_, __]) => {
+          this.checkedFavorite = false;
+        });
+      }
     }
   }
 };
@@ -309,15 +353,10 @@ export default {
   margin: 20upx 0 40upx;
   padding: 0 30upx;
 }
-.input-text {
-  font-size: 28upx;
-  height: 60upx;
-  margin-right: 25upx;
-  margin-bottom: 10upx;
-  /*background-color: #fff;*/
-  /*border: solid 1px #fafafa;*/
-}
-.empty {
-  margin-top: 1vh;
+.favorite {
+  z-index: 10000;
+  position: fixed;
+  top: 0;
+  right: 24upx;
 }
 </style>

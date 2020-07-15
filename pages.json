@@ -14,8 +14,7 @@
           "van-tab": "/static/vant/dist/tab/index"
         }
       }
-    },
-    {
+    },{
       "path": "pages/analysis/across",
       "style": {
         "navigationBarTitleText": "横向比较",
@@ -23,11 +22,11 @@
           "van-checkbox": "/static/vant/dist/checkbox/index",
           "van-checkbox-group": "/static/vant/dist/checkbox-group/index",
           "van-button": "/static/vant/dist/button/index",
-          "van-notify": "/static/vant/notify/index"
+          "van-notify": "/static/vant/notify/index",
+          "van-switch": "/static/vant/dist/switch/index"
         }
       }
-    },
-    {
+    },{
       "path": "pages/analysis/simulate",
       "style": {
         "navigationBarTitleText": "模拟组合",
@@ -38,7 +37,8 @@
           "van-divider": "/static/vant/dist/divider/index",
           "van-datetime-picker": "/static/vant/dist/datetime-picker/index",
           "van-popup": "/static/vant/dist/popup/index",
-          "van-notify": "/static/vant/notify/index"
+          "van-notify": "/static/vant/notify/index",
+          "van-switch": "/static/vant/dist/switch/index"
         }
       }
     }, {
@@ -52,10 +52,19 @@
     }, {
       "path":"pages/wxauth/auth"
     }, {
-      "path":"pages/my/index/main",
+      "path":"pages/my/index",
       "style": {
         "usingComponents": {
           "van-notify": "/static/vant/notify/index",
+          "van-cell": "/static/vant/dist/cell/index",
+          "van-cell-group": "/static/vant/dist/cell-group/index"
+        }
+      }
+    },{
+      "path" : "pages/my/collect",
+	  "style": {
+        "navigationBarTitleText": "我的收藏",
+        "usingComponents": {
           "van-cell": "/static/vant/dist/cell/index",
           "van-cell-group": "/static/vant/dist/cell-group/index"
         }
@@ -89,9 +98,8 @@
         "iconPath": "static/img/icons/tabBar/simulation.png",
         "selectedIconPath": "static/img/icons/tabBar/simulation-main.png",
         "text": "模拟组合"
-      },
-      {
-        "pagePath": "pages/my/index/main",
+      },{
+        "pagePath": "pages/my/index",
         "iconPath": "static/img/icons/tabBar/me.png",
         "selectedIconPath": "static/img/icons/tabBar/me-main.png",
         "text": "我的"

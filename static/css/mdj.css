@@ -382,6 +382,7 @@ button{
 
 /* table */
 .table {
+  background-color: white;
   border: 1px solid #dadada;
   border-right: 0;
   border-bottom: 0;
