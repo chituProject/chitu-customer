@@ -23,9 +23,10 @@ export const authMixin = {
         offpayAuth();
       } else if (!this.hasLoggedIn) {
         offpayAuth();
-      } else if (!this.hasAuth) {
-        navigateTo({ url: "/pages/wxauth/auth" });
       }
+      // else if (!this.hasAuth) {
+      //   navigateTo({ url: "/pages/wxauth/auth" });
+      // }
     });
   }
 };
@@ -34,20 +35,15 @@ export const authMixin = {
 // uni-app的策略貌是替换同名函数
 export const shareMixinDefault = {
   computed: {
-    ...mapGetters("user", ["user"]),
-    resellerUser() {
-      return this.$store.state.resellerUser;
-    }
+    ...mapGetters("user", ["user"])
   },
   onShareAppMessage() {
     wx.showShareMenu({
       withShareTicket: true
     });
-    let path = "/pages/online/index/main?";
     return {
-      title: "购物即免单！优质生活，这次我请！",
-      imageUrl: "/static/img/redPacket/card.png",
-      path
+      title: "赤兔小程序",
+      path: "/pages/online/index/main"
     };
   }
 };

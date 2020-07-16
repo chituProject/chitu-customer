@@ -26,7 +26,7 @@
               <view class="th">组合名</view>
               <view class="th th1">YTD</view>
               <view class="th">最近三年</view>
-              <view class="th">滚动一年胜率</view>
+              <view class="th">滚动一年</view>
               <view class="th">夏普比率</view>
             </view>
             <view
@@ -41,7 +41,7 @@
               <view class="td">{{
                 formatPercent(item.three_year_profit)
               }}</view>
-              <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
+              <view class="td">{{ formatPercent(item.roll_year) }}</view>
               <view class="td">{{ item.sharpe_ratio }}</view>
             </view>
           </view>

@@ -193,7 +193,8 @@ export default {
     this.initChart();
   },
   computed: {
-    ...mapGetters("user", ["collect"])
+    ...mapGetters("user", ["collect"]),
+    ...mapGetters("app", ["hasLoggedIn"])
   },
   watch: {
     selectedFunds: {
@@ -208,10 +209,15 @@ export default {
         });
       },
       immediate: true
+    },
+    hasLoggedIn(val) {
+      if (val) {
+        this.getData(this.hideAnimation);
+      }
     }
   },
   onShow() {
-    this.getData(this.hideAnimation);
+    if (this.hasLoggedIn) this.getData(this.hideAnimation);
   },
   methods: {
     initChart() {
@@ -372,7 +378,7 @@ export default {
           if (this.collect.id > -1 && this.collect.type === "SM") {
             this.$request({
               method: "GET",
-              url: `customer_collect/${this.collect.id}`
+              url: `customer_collect/${this.collect.id}/`
             }).then(([_, res2]) => {
               this.confirmStage = 1;
               this.checkedFavorite = true;

@@ -260,9 +260,9 @@ export function httpRequest(args) {
   // 用uni-app封装的promise模式调用
   return uni.request(args).then(([err, res]) => {
     if (err || res.statusCode < 200 || res.statusCode > 299) {
-      if (res.data.detail && res.statusCode !== 403 && res.statusCode !== 409) {
-        showToast({ title: res.data.detail, icon: "none" });
-      }
+      // if (res.data.detail && res.statusCode !== 403 && res.statusCode !== 409) {
+      //   showToast({ title: res.data.detail, icon: "none" });
+      // }
       return [err || new Error(`Response ${res.statusCode}`), null];
     }
     console.log("AJAX (promise):", args, err, res);

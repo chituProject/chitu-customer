@@ -328,15 +328,6 @@ export default {
         typeof callback === "function" && callback();
       });
     }
-  },
-  onShareAppMessage() {
-    wx.showShareMenu({
-      withShareTicket: true
-    });
-    return {
-      title: "赤兔小程序",
-      path: "/pages/online/index/main"
-    };
   }
 };
 </script>

@@ -176,10 +176,18 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["collect"])
+    ...mapGetters("user", ["collect"]),
+    ...mapGetters("app", ["hasLoggedIn"])
+  },
+  watch: {
+    hasLoggedIn(val) {
+      if (val) {
+        this.getData(this.hideAnimation);
+      }
+    }
   },
   onShow() {
-    this.getData(this.hideAnimation);
+    if (this.hasLoggedIn) this.getData(this.hideAnimation);
   },
   methods: {
     handleCheckedFundsChange(e) {
@@ -213,10 +221,11 @@ export default {
             }
           }
           this.fundList = res.data.results;
+          console.log("collect:", this.collect);
           if (this.collect.id > -1 && this.collect.type === "HC") {
             this.$request({
               method: "GET",
-              url: `customer_collect/${this.collect.id}`
+              url: `customer_collect/${this.collect.id}/`
             }).then(([_, res2]) => {
               this.fundAchievementHeader = [
                 {
