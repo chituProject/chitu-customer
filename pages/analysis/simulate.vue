@@ -24,12 +24,14 @@
         v-show="confirmStage > 0"
         class="favorite btn-main-reverse btn-radius background-white"
       >
-        <div class="fs-18 main-color">收藏此比较</div>
-        <van-switch
-          active-color="#9a1f27"
-          :value="checkedFavorite"
-          @input="onChangeFavorite"
-        />
+        <div class="flex">
+          <div class="fs-14 line-36 main-color">收藏</div>
+          <van-switch
+            active-color="#9a1f27"
+            :value="checkedFavorite"
+            @input="onChangeFavorite"
+          />
+        </div>
         <van-button size="small" color="#9a1f27" @click="simulationClear"
           >清空当前选择</van-button
         >
@@ -271,6 +273,7 @@ export default {
       });
     },
     simulationClear() {
+      this.confirmStage = 0;
       this.selectedFunds = [];
       this.chartData = [];
       this.tableData = [];
@@ -342,7 +345,7 @@ export default {
           this.setChartTable(res.data.results);
         })
         .finally(() => {
-          this.confirmStage += 1;
+          this.confirmStage = 1;
           this.showAnimation = false;
         });
     },
@@ -357,25 +360,26 @@ export default {
       return this.$request({
         method: "GET",
         url: "fund_archive/"
-      }).then(([_, res]) => {
-        this.list = res.data.results;
-        res.data.results.forEach(item => {
-          this.list1.push(item.name);
-        });
-        if (this.collectId > -1) {
-          this.$request({
-            method: "GET",
-            url: `customer_collect/${this.collectId}`
-          }).then(([_, res2]) => {
-            this.confirmStage = 1;
-            this.checkedFavorite = true;
-            this.setChartTable(res2.data.fund_simulation.data);
-            typeof callback === "function" && callback();
+      })
+        .then(([_, res]) => {
+          this.list = res.data.results;
+          res.data.results.forEach(item => {
+            this.list1.push(item.name);
           });
-        } else {
+          if (this.collectId > -1) {
+            this.$request({
+              method: "GET",
+              url: `customer_collect/${this.collectId}`
+            }).then(([_, res2]) => {
+              this.confirmStage = 1;
+              this.checkedFavorite = true;
+              this.setChartTable(res2.data.fund_simulation.data);
+            });
+          }
+        })
+        .finally(() => {
           typeof callback === "function" && callback();
-        }
-      });
+        });
     },
     setChartTable(list) {
       this.tableData = [];

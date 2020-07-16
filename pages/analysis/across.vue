@@ -17,12 +17,18 @@
       v-show="confirmStage > 1"
       class="favorite btn-main-reverse btn-radius background-white"
     >
-      <div class="fs-18 main-color">收藏此比较</div>
-      <van-switch
-        active-color="#9a1f27"
-        :value="checkedFavorite"
-        @input="onChangeFavorite"
-      />
+      <div class="flex">
+        <div class="fs-14 line-36 main-color">收藏</div>
+        <van-switch
+          active-color="#9a1f27"
+          :value="checkedFavorite"
+          @input="onChangeFavorite"
+        />
+      </div>
+
+      <van-button size="small" color="#9a1f27" @click="acrossClear"
+        >清空当前选择</van-button
+      >
     </div>
     <van-checkbox-group
       :value="checkedFunds"
@@ -211,6 +217,7 @@ export default {
               method: "GET",
               url: `customer_collect/${this.collectId}`
             }).then(([_, res2]) => {
+              // TODO: Add tableheader init func
               this.checkedFavorite = true;
             });
           }
@@ -223,7 +230,7 @@ export default {
       if (this.checkedFunds.length < 2) {
         notify("请选择至少两个基金");
       }
-      this.confirmStage += 1;
+      this.confirmStage = 1;
       let idsStr = "";
       this.checkedFunds.map((data, index) => {
         idsStr += index === 0 ? `${data}` : `,${data}`;
@@ -238,7 +245,7 @@ export default {
       });
     },
     selectMetricsConfirm() {
-      this.confirmStage += 1;
+      this.confirmStage = 2;
       let fundachievementsStr = "";
       let fundarchiveStr = "";
       let f1 = 0;
@@ -329,6 +336,13 @@ export default {
         });
         this.fundAchievementTable.push(tableAchievementRow);
       });
+    },
+    acrossClear() {
+      this.confirmStage = 0;
+      this.checkedMetrics = [];
+      this.fundAchievementTable = [];
+      this.fundArchiveTable = [];
+      this.$store.commit("user/SET_COLLECTID", -1);
     },
     onChangeFavorite() {
       if (!this.checkedFavorite) {
