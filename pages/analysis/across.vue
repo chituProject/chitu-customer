@@ -3,7 +3,7 @@
     <van-notify id="van-notify" />
     <loading-animation :show-animation="showAnimation" />
     <div class="background-white" />
-    <div class="title">
+    <div v-if="confirmStage !== 3" class="title">
       选择基金
       <van-button
         style="margin: 0 12px"
@@ -31,6 +31,7 @@
       >
     </div>
     <van-checkbox-group
+      v-if="confirmStage !== 3"
       :value="checkedFunds"
       @change="handleCheckedFundsChange"
     >
@@ -65,7 +66,7 @@
       </div>
     </van-checkbox-group>
 
-    <template v-if="confirmStage > 0">
+    <template v-if="confirmStage > 0 && confirmStage < 3">
       <div class="title">
         选择指标
         <van-button
@@ -175,7 +176,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("user", ["collectId"])
+    ...mapGetters("user", ["collect"])
   },
   onShow() {
     this.getData(this.hideAnimation);
@@ -212,12 +213,41 @@ export default {
             }
           }
           this.fundList = res.data.results;
-          if (this.collectId > -1) {
+          if (this.collect.id > -1 && this.collect.type === "HC") {
             this.$request({
               method: "GET",
-              url: `customer_collect/${this.collectId}`
+              url: `customer_collect/${this.collect.id}`
             }).then(([_, res2]) => {
-              // TODO: Add tableheader init func
+              this.fundAchievementHeader = [
+                {
+                  title: "基金名称",
+                  key: "id"
+                }
+              ];
+              this.fundArchiveHeader = [
+                {
+                  title: "基金名称",
+                  key: "id"
+                }
+              ];
+              res2.data.fund_comparison.title.achievement_title.map(data => {
+                const tableCol = {
+                  title: data,
+                  key: data
+                };
+                this.fundAchievementHeader.push(tableCol);
+              });
+              res2.data.fund_comparison.title.data_title.map(data => {
+                const tableCol = {
+                  title: data,
+                  key: data
+                };
+                this.fundArchiveHeader.push(tableCol);
+              });
+
+              this.updateArchiveTable(res2.data.fund_comparison.data);
+              this.updateAchievementTable(res2.data.fund_comparison.data);
+              this.confirmStage = 3;
               this.checkedFavorite = true;
             });
           }
@@ -229,6 +259,7 @@ export default {
     selectFundsConfirm() {
       if (this.checkedFunds.length < 2) {
         notify("请选择至少两个基金");
+        return;
       }
       this.confirmStage = 1;
       let idsStr = "";
@@ -342,7 +373,7 @@ export default {
       this.checkedMetrics = [];
       this.fundAchievementTable = [];
       this.fundArchiveTable = [];
-      this.$store.commit("user/SET_COLLECTID", -1);
+      this.$store.commit("user/SET_COLLECTID", "", -1);
     },
     onChangeFavorite() {
       if (!this.checkedFavorite) {
@@ -359,14 +390,15 @@ export default {
           url: "customer_collect/",
           data
         }).then(([_, res]) => {
-          this.$store.commit("user/SET_COLLECTID", res.data.id);
+          this.$store.commit("user/SET_COLLECTID", "HC", res.data.id);
           this.checkedFavorite = true;
         });
       } else {
         this.$request({
           method: "DELETE",
-          url: `customer_collect/${this.collectId}/`
+          url: `customer_collect/${this.collect.id}/`
         }).then(([_, __]) => {
+          this.$store.commit("user/SET_COLLECTID", "", -1);
           this.checkedFavorite = false;
         });
       }

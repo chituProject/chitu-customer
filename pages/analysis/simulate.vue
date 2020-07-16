@@ -193,7 +193,7 @@ export default {
     this.initChart();
   },
   computed: {
-    ...mapGetters("user", ["collectId"])
+    ...mapGetters("user", ["collect"])
   },
   watch: {
     selectedFunds: {
@@ -267,8 +267,8 @@ export default {
       canvaLineA.scrollEnd(e);
       // 下面是toolTip事件，如果滚动后不需要显示，可不填写
       canvaLineA.showToolTip(e, {
-        format(item, category) {
-          return `${category} ${item.name}:${item.data}`;
+        format(item) {
+          return `${formatTimeMonth(item.time)}:${item.data}`;
         }
       });
     },
@@ -277,7 +277,7 @@ export default {
       this.selectedFunds = [];
       this.chartData = [];
       this.tableData = [];
-      this.$store.commit("user/SET_COLLECTID", -1);
+      this.$store.commit("user/SET_COLLECTID", "", -1);
     },
     onInput1(val) {
       this.popup2 = false;
@@ -325,7 +325,10 @@ export default {
       this.selectedFunds.push(this.selectedFund);
     },
     simulationConfirm() {
-      if (this.selectedFunds.length < 2) return;
+      if (this.selectedFunds.length < 2) {
+        notify("请选择至少两个基金");
+        return;
+      }
       this.showAnimation = true;
       const data = [];
       this.selectedFunds.map(item => {
@@ -366,10 +369,10 @@ export default {
           res.data.results.forEach(item => {
             this.list1.push(item.name);
           });
-          if (this.collectId > -1) {
+          if (this.collect.id > -1 && this.collect.type === "SM") {
             this.$request({
               method: "GET",
-              url: `customer_collect/${this.collectId}`
+              url: `customer_collect/${this.collect.id}`
             }).then(([_, res2]) => {
               this.confirmStage = 1;
               this.checkedFavorite = true;
@@ -422,14 +425,15 @@ export default {
           url: "customer_collect/",
           data
         }).then(([_, res]) => {
-          this.$store.commit("user/SET_COLLECTID", res.data.id);
+          this.$store.commit("user/SET_COLLECTID", "SM", res.data.id);
           this.checkedFavorite = true;
         });
       } else {
         this.$request({
           method: "DELETE",
-          url: `customer_collect/${this.collectId}/`
+          url: `customer_collect/${this.collect.id}/`
         }).then(() => {
+          this.$store.commit("user/SET_COLLECTID", "", -1);
           this.checkedFavorite = false;
         });
       }

@@ -15,7 +15,10 @@ const state = {
   scope: {
     user: true
   },
-  collectId: -1
+  collect: {
+    type: "",
+    id: -1
+  }
 };
 
 const mutations = {
@@ -34,9 +37,9 @@ const mutations = {
     state.scope.user = status;
     console.log("user authorize status updated: ", state.scope.user);
   },
-  SET_COLLECTID: (state, status) => {
-    state.collectId = status;
-    console.log("user collectId updated: ", state.collectId);
+  SET_COLLECTID: (state, collect) => {
+    state.collect = collect;
+    console.log("user collect updated: ", state.collect);
   }
 };
 
@@ -60,8 +63,8 @@ const getters = {
   phone: (state, getters) => {
     return getters.userInfo.wechat_phone_number;
   },
-  collectId: state => {
-    return state.collectId;
+  collect: state => {
+    return state.collect;
   }
 };
 

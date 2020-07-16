@@ -498,8 +498,8 @@ export default {
       canvaLineA.scrollEnd(e);
       // 下面是toolTip事件，如果滚动后不需要显示，可不填写
       canvaLineA.showToolTip(e, {
-        format(item, category) {
-          return `${category} ${item.name}:${item.data}`;
+        format(item) {
+          return `${formatTimeMonth(item.time)}:${item.data}`;
         }
       });
     },

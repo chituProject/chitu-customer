@@ -52,7 +52,7 @@
           @scrolltolowerFn="scrolltolowerFn"
         >
           <!-- 内部block可自定义 -->
-          <block slot="sibScrollList" class="">
+          <block slot="sibScrollList">
             <view class="table">
               <view class="tr" style="position: absolute">
                 <view class="th">基金经理</view>
@@ -84,26 +84,24 @@
           </block>
         </sib-list>
       </view>
-      <view>
-        <view class="table">
-          <view class="tr" style="position: absolute">
-            <view class="th">/</view>
-            <view class="th th1">基金名</view>
-            <view class="th th1">YTD</view>
-            <view class="th">最近三年</view>
-            <view class="th">滚动一年胜率</view>
-            <view class="th">夏普比率</view>
-            <view class="th th1">/</view>
-          </view>
-          <view v-for="item in list_index" :key="item.id" class="tr">
-            <view class="td">/</view>
-            <view class="td">{{ item.name }}</view>
-            <view class="td">{{ formatPercent(item.ytd) }}</view>
-            <view class="td">{{ formatPercent(item.three_year_profit) }}</view>
-            <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
-            <view class="td">{{ item.sharpe_ratio }}</view>
-            <view class="td">\</view>
-          </view>
+      <view class="table">
+        <view class="tr">
+          <view class="th">/</view>
+          <view class="th th1">基金名</view>
+          <view class="th th1">YTD</view>
+          <view class="th">最近三年</view>
+          <view class="th">滚动一年胜率</view>
+          <view class="th">夏普比率</view>
+          <view class="th th1">/</view>
+        </view>
+        <view v-for="item in list_index" :key="item.id" class="tr">
+          <view class="td">/</view>
+          <view class="td">{{ item.name }}</view>
+          <view class="td">{{ formatPercent(item.ytd) }}</view>
+          <view class="td">{{ formatPercent(item.three_year_profit) }}</view>
+          <view class="td">{{ formatPercent(item.roll_year_win) }}</view>
+          <view class="td">{{ item.sharpe_ratio }}</view>
+          <view class="td">\</view>
         </view>
       </view>
 
@@ -194,14 +192,14 @@ export default {
     }
   },
   mounted() {
-    console.log(this.isIpx);
     if (this.isIpx) {
       this.height = "780upx";
     }
     this.query = getQuery(this);
-    // this.initData();
   },
-  onShow() {},
+  onShow() {
+    if (this.hasLoggedIn) this.fetchHomepage(this.hideAnimation);
+  },
   methods: {
     formatPercent,
     // 刷新touch监听
@@ -228,7 +226,7 @@ export default {
           mask: true
         });
         this.page_num += 1;
-        await this.fetchHomepage();
+        await this.fetchHomepage(this.hideAnimation);
         uni.hideLoading();
       }
     },
@@ -236,25 +234,25 @@ export default {
       this.type1 = item;
       this.list_manager = [];
       this.list_index = [];
-      this.fetchHomepage();
+      this.fetchHomepage(this.hideAnimation);
     },
     change2(item) {
       this.type2 = item;
       this.list_manager = [];
       this.list_index = [];
-      this.fetchHomepage();
+      this.fetchHomepage(this.hideAnimation);
     },
     change3(item) {
       this.type3 = item;
       this.list_manager = [];
       this.list_index = [];
-      this.fetchHomepage();
+      this.fetchHomepage(this.hideAnimation);
     },
     onRefresh() {
       console.log("reached bottom");
       if (!this.finished) {
         this.page_num += 1;
-        this.fetchHomepage();
+        this.fetchHomepage(this.hideAnimation);
       }
     },
     nav(url) {
