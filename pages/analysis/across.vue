@@ -189,6 +189,15 @@ export default {
   onShow() {
     if (this.hasLoggedIn) this.getData(this.hideAnimation);
   },
+  onShareAppMessage() {
+    wx.showShareMenu({
+      withShareTicket: true
+    });
+    return {
+      title: "赤兔小程序",
+      path: "/pages/online/index/main"
+    };
+  },
   methods: {
     handleCheckedFundsChange(e) {
       this.confirmStage = 0;
